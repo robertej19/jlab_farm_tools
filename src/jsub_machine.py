@@ -22,7 +22,7 @@ COMMAND:
 cp {14}make_aao_norad_inp.exe .
 cp {14}aao_norad.exe . 
 cp {14}lundfilt.exe .
-./make_aao_norad_inp.exe --physics_model {2} --flag_ehel {3} -npart {4} --epirea {5} --ebeam {6} --q2min {7} --q2max {8} --epmin {9} --epmax {10} --nmax {11} --fmcall {12} --boso {13} --out aao_input_{0}.inp
+./make_aao_norad_inp.exe --physics_model {2} --flag_ehel {3} --npart {4} --epirea {5} --ebeam {6} --q2min {7} --q2max {8} --epmin {9} --epmax {10} --nmax {11} --fmcall {12} --boso {13} --out aao_input_{0}.inp
 ./aao_norad.exe < aao_input_{0}.inp
 ./lundfilt.exe -f aao_norad.lund -o post_filter.lund
 
@@ -49,7 +49,7 @@ if __name__ == "__main__":
     parser.add_argument("--outdir",help="Specify full or relative path to output directory for jsub file",default=exe_abs_path+"../../sub_warehouse/")
     parser.add_argument("-r",help="Removes all files from output directory, if any existed",default=False,action='store_true')
     parser.add_argument("-n",type=int,help="Number of submission files",default=1)
-    parser.add_argument("-d",type=str,help="Output Dir for Farm Return File",default="/work/clas12/robertej/")
+    parser.add_argument("-d",type=str,help="Output Dir for Farm Return File",default="/volatile/clas12/robertej/")
     parser.add_argument("--exedir",type=str,help="Specifcy full path of executables directory, otherwise uses default",default=exe_abs_path)
     
     #For make_aao_norad_inp.exe
