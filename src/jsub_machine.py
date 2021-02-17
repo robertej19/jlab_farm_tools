@@ -13,7 +13,7 @@ def gen_jsub(args,count):
     string = """PROJECT: clas12
 JOBNAME: pi0gen_{0}
 
-TRACK: analysis
+TRACK: {15}
 DISK_SPACE: 4 GB
 
 MEMORY: 1024 MB
@@ -32,7 +32,7 @@ OUTPUT_DATA:post_filter.lund
 OUTPUT_TEMPLATE:{1}pi0_gen{0}.lund
 """.format(count,args.d,args.physics_model,args.flag_ehel,args.npart,args.epirea,
     args.ebeam,args.q2min,args.q2max,args.epmin,args.epmax,
-    args.nmax,args.fmcall,args.boso,args.exedir)
+    args.nmax,args.fmcall,args.boso,args.exedir,args.track)
     outfile.write(string)
     outfile.close()
 
@@ -66,7 +66,7 @@ if __name__ == "__main__":
     parser.add_argument("--fmcall",help="factor to adjust the maximum cross section, used in M.C. selection",default=1.0)
     parser.add_argument("--boso",help="1=bos output, 0=no bos output",default=1)
     parser.add_argument("--out",help="lund input filename",default="aao_norad_input.inp")
-    
+    parser.add_argument("--debug",help="jsub track, e.g. debug, analysis",default="analysis")
     
     args = parser.parse_args()
 
