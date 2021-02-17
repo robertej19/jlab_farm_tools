@@ -1,0 +1,20 @@
+PROJECT: clas12
+JOBNAME: pi0gen_0
+
+TRACK: analysis
+DISK_SPACE: 4 GB
+
+MEMORY: 1024 MB
+
+COMMAND:
+cp /mnt/c/Users/rober/Dropbox/Bobby/Linux/work/CLAS12/mit-clas12-analysis/theana/paragon/gen_tools/pi0_gen_tools/src/mnt/c/Users/rober/Dropbox/Bobby/Linux/work/CLAS12/mit-clas12-analysis/theana/paragon/gen_tools/pi0_gen_tools/../../run/gen_processors/make_aao_norad_inp.exe .
+cp /mnt/c/Users/rober/Dropbox/Bobby/Linux/work/CLAS12/mit-clas12-analysis/theana/paragon/gen_tools/pi0_gen_tools/src/mnt/c/Users/rober/Dropbox/Bobby/Linux/work/CLAS12/mit-clas12-analysis/theana/paragon/gen_tools/pi0_gen_tools/../../run/gen_processors/aao_norad.exe . 
+cp /mnt/c/Users/rober/Dropbox/Bobby/Linux/work/CLAS12/mit-clas12-analysis/theana/paragon/gen_tools/pi0_gen_tools/src/mnt/c/Users/rober/Dropbox/Bobby/Linux/work/CLAS12/mit-clas12-analysis/theana/paragon/gen_tools/pi0_gen_tools/../../run/gen_processors/lundfilt.exe .
+./make_aao_norad_inp.exe --physics_model 5 --flag_ehel 1 -npart 3 --epirea 1 --ebeam 10.6 --q2min 0.2 --q2max 10.6 --epmin 0.2 --epmax 10.6 --nmax 10000 --fmcall 1.0 --boso 1 --out aao_input_0.inp
+./aao_norad.exe < aao_input_0.inp
+./lundfilt.exe -f aao_norad.lund -o post_filter.lund
+
+SINGLE_JOB: true
+
+OUTPUT_DATA:post_filter.lund
+OUTPUT_TEMPLATE:/work/clas12/robertej/pi0_gen0.lund
