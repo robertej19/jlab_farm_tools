@@ -45,7 +45,7 @@ if __name__ == "__main__":
     #if getattr(sys, 'frozen', False):
     __file__ = os.path.dirname(sys.executable)
     #doesnt work if compiled: exe_abs_path = os.getcwd()+__file__.split(os.path.basename(__file__))[0]+"../../run/gen_processors/"
-    exe_abs_path = __file__.split(os.path.basename(__file__))[0]+"../run/gen_processors/"
+    exe_abs_path = __file__.split(os.path.basename(__file__))[0]+"run/gen_processors/"
 
     parser = argparse.ArgumentParser(description="Get args")
     parser.add_argument("--outdir",help="Specify full or relative path to output directory for jsub file",default=exe_abs_path+"../../sub_warehouse/")
@@ -93,5 +93,5 @@ if __name__ == "__main__":
     
     print("Generating {} submission files".format(args.n))
     for index in range(0,args.n):
-        print("Creating submission file {} of {}".format(index,args.n))
+        print("Creating submission file {} of {}".format(index+1,args.n))
         gen_jsub(args,index)
