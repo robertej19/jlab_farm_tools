@@ -1,8 +1,5 @@
 # pi0_gen_tools
-
-# pi0_gen_tools
-
-Usage:
+# Usage:
 
 git clone https://github.com/robertej19/pi0_gen_tools.git
 cd pi0_gen_tools/
