@@ -66,7 +66,7 @@ if __name__ == "__main__":
     parser.add_argument("--fmcall",help="factor to adjust the maximum cross section, used in M.C. selection",default=1.0)
     parser.add_argument("--boso",help="1=bos output, 0=no bos output",default=1)
     parser.add_argument("--out",help="lund input filename",default="aao_norad_input.inp")
-    parser.add_argument("--debug",help="jsub track, e.g. debug, analysis",default="analysis")
+    parser.add_argument("--track",help="jsub track, e.g. debug, analysis",default="analysis")
     
     args = parser.parse_args()
 
