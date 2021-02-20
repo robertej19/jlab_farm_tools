@@ -1,3 +1,5 @@
 *.lund
 sub_warehouse/*
 robertej/*
+hipotest/*
+sub_filters_warehouse/*
