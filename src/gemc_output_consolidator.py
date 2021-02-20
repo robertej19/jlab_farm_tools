@@ -18,7 +18,7 @@ def move_files(args,outdirs):
     files_for_transfer = [dst_filename,]
 
     for dirind,dir in enumerate(dir_list):
-        print("On dir {}, number {} out of {}".format(dir,dirind+1,len(dir)))
+        print("On dir {}, number {} out of {}".format(dir,dirind+1,len(dir_list)))
         files = os.listdir(args.gemcdir+dir)
         if args.l:
             if lund_filename in files and dst_filename in files:
