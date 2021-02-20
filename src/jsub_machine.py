@@ -45,7 +45,8 @@ if __name__ == "__main__":
     #doesnt work if compiled: exe_abs_path = os.getcwd()+__file__.split(os.path.basename(__file__))[0]+"../../run/gen_processors/"
     exe_abs_path = __file__.split(os.path.basename(__file__))[0]+"run/gen_processors/"
 
-    parser = argparse.ArgumentParser(description="Get args")
+    parser = argparse.ArgumentParser(description="Get args",formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    
     parser.add_argument("--outdir",help="Specify full or relative path to output directory for jsub file",default=exe_abs_path+"../../sub_warehouse/")
     parser.add_argument("-r",help="Removes all files from output directory, if any existed",default=False,action='store_true')
     parser.add_argument("-n",type=int,help="Number of submission files",default=1)
