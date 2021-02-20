@@ -20,3 +20,6 @@ This will generate 10 submissions scripts in a default directory named "sub_ware
 #Check here to see status of jobs on batch farm:
 https://scicomp.jlab.org/scicomp/index.html#/farmJobs/activeJob
 
+#How to transfer output files from GEMC to a different directory
+./run/gemc_copier.exe --gemcdir=/volatile/clas12/osg/robertej/job_2408/output/ --outdir=/volatile/clas12/robertej/testpi0sim1K/ -l  
+As always, use ./run/gemc_copier.exe -h to see a full list of options
