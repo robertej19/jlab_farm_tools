@@ -12,35 +12,30 @@ from shutil import copyfile
 def move_files(args,outdirs):
 
     dir_list = os.listdir(args.gemcdir)
-
-    print(dir_list)
-    print(args.gemcdir)
-
     lund_filename = 'lund.dat'
     dst_filename = 'dst.hipo'
 
     files_for_transfer = [dst_filename,]
 
-    for dir in dir_list:
-        print("On dir {}".format(dir))
+    for dirind,dir in enumerate(dir_list):
+        print("On dir {}, number {} out of {}".format(dir,dirind+1,len(dir)))
         files = os.listdir(args.gemcdir+dir)
-        print(files)
         if args.l:
             if lund_filename in files and dst_filename in files:
-                print("Found LUND and DST Files in {}".format(dir))
+                #print("Found LUND and DST Files in {}".format(dir))
                 files_for_transfer = [dst_filename,lund_filename]
             else:
                 print("DST and Lund not found in {}, skipping".format(dir))
                 continue
         else:
             if dst_filename in files:
-                print("Found DST File in {}".format(dir))
+                #print("Found DST File in {}".format(dir))
                 files_for_transfer = [dst_filename,]
             else:
                 continue
 
         for index,filename in enumerate(files_for_transfer):
-            print("Moving {}".format(filename))
+            #print("Moving {}".format(filename))
             rename = "{}_{}".format(dir,filename)
             copyfile(args.gemcdir+dir+"/"+filename,outdirs[index]+rename)
             print("Moved to {}".format(outdirs[index]+rename))
