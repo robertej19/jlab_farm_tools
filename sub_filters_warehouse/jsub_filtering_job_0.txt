@@ -1,0 +1,17 @@
+PROJECT: clas12
+JOBNAME: filtering_0
+
+TRACK: analysis
+DISK_SPACE: 4 GB
+
+MEMORY: 1024 MB
+
+COMMAND:
+cp /work/clas12/robertej/filtering/filterEvents .
+cp hipotest/dst1.hipo . 
+./filterEvents --start=0% --end=100% --polarity=inbending  --twophotons  dst1.hipo
+
+SINGLE_JOB: true
+
+OUTPUT_DATA: dst1_filtered.hipo
+OUTPUT_TEMPLATE:/volatile/clas12/robertej/test/dst1_filtered.hipo
