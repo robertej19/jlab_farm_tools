@@ -48,7 +48,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Get args",formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     
     parser.add_argument("-r",help="Removes all files from output directory, if any existed",default=False,action='store_true')
-    parser.add_argument("-n",type=int,help="Number of submission files",default=1)
+    parser.add_argument("-n",type=int,help="Number of submission files",default=0)
     parser.add_argument("--outdir",help="Specify full or relative path to output directory for jsub file",default=exe_abs_path+"../../sub_filters_warehouse/")
     parser.add_argument("--filter_exedir",type=str,help="Specifcy full path of executables directory, otherwise uses default",default=exe_abs_path)
     parser.add_argument("--track",help="jsub track, e.g. debug, analysis",default="analysis")
@@ -103,6 +103,6 @@ if __name__ == "__main__":
         args.n = len(submissions_list) 
 
     print("Generating {} submission files".format(args.n))
-    for index in range(0,args.n+1):
+    for index in range(0,args.n):
         print("Creating submission file {} of {}".format(index+1,args.n))
         gen_jsub(args,extra_args,index,submissions_list[index])
