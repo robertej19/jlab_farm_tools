@@ -27,7 +27,7 @@ mkdir -p target/
 cp {2}bin/filterEvents bin/
 cp {2}target/filter-1.2.jar target/
 cp {3} . 
-./filterEvents --start={4} --end={5} --polarity={6} {7} {8}
+./bin/filterEvents --start={4} --end={5} --polarity={6} {7} {8}
 
 SINGLE_JOB: true
 

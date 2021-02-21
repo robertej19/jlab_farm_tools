@@ -14,7 +14,7 @@ def gen_jsub(args,extra_args,count,filename):
     print(filename_base)
     outfile = open(args.outdir+"jsub_filtering_job_{}.txt".format(count),"w")
     string = """PROJECT: clas12
-JOBNAME: filtering_{0}
+JOBNAME: filtering_converting_{0}
 
 TRACK: {1}
 DISK_SPACE: 4 GB
@@ -27,7 +27,7 @@ mkdir -p target/
 cp {2}bin/filterEvents bin/
 cp {2}target/filter-1.2.jar target/
 cp {11}convert .
-./filterEvents --start={4} --end={5} --polarity={6} {7} {8}
+./bin/filterEvents --start={4} --end={5} --polarity={6} {7} {8}
 rm {12}
 ./convert
 
