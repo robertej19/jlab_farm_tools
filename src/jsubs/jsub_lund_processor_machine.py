@@ -1,4 +1,4 @@
-#!/bin/python
+#!/bin/python3.4
 #cython: language_level=3
 
 import random 
