@@ -6,17 +6,52 @@ import sys
 import os
 import pickle
 
+import math
 
-import numpy as np 
+#import numpy as np 
 #import random 
 #import sys
 #import os, subprocess
 import math
 
 
-def unit_vector(vector):
+def manual_dot(v1,v2):
+    #calc dot
+    dp = v1[0]*v2[0]+v1[1]*v2[1]+v1[2]*v2[2]
+
+    return dp
+
+def manual_cross(v1,v2):
+    #calc cross
+    ele1 = v1[1]*v2[2]-v1[2]*v2[1]
+  
+    v3 = (ele1,-1*(v1[0]*v2[2]-v1[2]*v2[0]),v1[1]*v2[0]-v1[0]*v2[1])
+    return v3
+
+def unit_vector(v1):
     """ Returns the unit vector of the vector.  """
-    return vector / np.linalg.norm(vector)
+    #return vector / np.linalg.norm(vector)
+    mag2 = v1[0]*v1[0]+v1[1]*v1[1]+v1[2]*v1[2]
+    mag = mag2**0.5
+
+    uv = (v1[0]/mag,v1[1]/mag,v1[2]/mag)
+    return uv
+
+
+
+
+def manual_arccos(theta):
+    #calc arc cosine
+
+    return 3
+
+
+
+def manual_clip(values):
+    #does something
+
+    return 3
+
 
 def vec_angle(v1, v2):
     """stolen from https://stackoverflow.com/questions/2827393/angles-between-two-n-dimensional-vectors-in-python/13849249#13849249"""
@@ -31,7 +66,15 @@ def vec_angle(v1, v2):
     """
     v1_u = unit_vector(v1)
     v2_u = unit_vector(v2)
-    return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))*180/np.pi
+    return manual_arccos(manual_clip(manual_dot(v1_u, v2_u), -1.0, 1.0))*180/3.14159
+
+
+
+
+#### BUILD FROM UP TO HERE ^^
+
+
+
 
 def vec_subtract(vec1,vec2):
     res = tuple(map(lambda i, j: i - j, vec1, vec2)) 
@@ -87,8 +130,6 @@ def calculate_kinematics(event_frame):
     # pho2_4mom = (photon2["E_GeV"].values[0],photon2["mom_x"].values[0],photon2["mom_y"].values[0],photon2["mom_z"].values[0])
 
 
-    #e_energy = np.sqrt(e_mass**2+np.sum(np.square(e_mom)))
-
     target_4mom = (pro_mass,0,0,0)
 
     Eprime = e_4mom[0]
@@ -112,13 +153,13 @@ def calculate_kinematics(event_frame):
     #Calculate phi (trento angle)
 
     e3 = e_4mom[1:]
-    v_lepton = np.cross(Ebeam_4mom[1:],e_4mom[1:])
-    v_hadron = np.cross(pro_4mom[1:],virtual_gamma[1:])
-    v_hadron2 = np.cross(pro_4mom[1:],pion_4mom[1:])
+    v_lepton = manual_cross(Ebeam_4mom[1:],e_4mom[1:])
+    v_hadron = manual_cross(pro_4mom[1:],virtual_gamma[1:])
+    v_hadron2 = manual_cross(pro_4mom[1:],pion_4mom[1:])
 
     phi = vec_angle(v_lepton,v_hadron)
 
-    if (np.dot(v_lepton,pro_4mom[1:])>0):
+    if (manual_dot(v_lepton,pro_4mom[1:])>0):
         phi = 360 - phi
     
 
@@ -164,7 +205,15 @@ def process_lund_into_events(df,run_num):
 
 
 if __name__ == "__main__":
+    
+    v1 = (1,2,3)
+    v2 = (1,2,83)
 
+    a = unit_vector(v1)
+    print(math.acos(0))
+    sys.exit()
+
+"""
     parser = argparse.ArgumentParser(description="Get args",formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     
     default_pkl_inname = "lund_simu_998.pkl"
@@ -199,6 +248,7 @@ if __name__ == "__main__":
 
     with open(args.outfile, 'wb') as f:
         pickle.dump(events_list, f)
+"""
 
 
 
