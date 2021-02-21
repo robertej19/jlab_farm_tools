@@ -1,7 +1,7 @@
 #!/bin/python3.4
 #cython: language_level=3
 
-import pandas as pd
+import pickle
 import argparse
 import sys
 import os
@@ -69,9 +69,10 @@ def convert_lund_file_to_df(filename):
             events_repacked.append(event[0]+event[particle_ind])    
 
 
-    df_labels = ["event_num"]+lund_header_labels+lund_particle_labels
-    df = pd.DataFrame(events_repacked, columns=df_labels)
-    
+    #df_labels = ["event_num"]+lund_header_labels+lund_particle_labels
+    #df = pd.DataFrame(events_repacked, columns=df_labels)
+    df = events_repacked
+
     return df
 
 
@@ -102,9 +103,10 @@ if __name__ == "__main__":
     
 
     df = convert_lund_file_to_df(args.infile)  
-    print(df)
+    print(len(df))
 
-    df.to_pickle(args.outfile)
+    with open(args.outfile, 'wb') as f:
+        pickle.dump(df, f)
     
     print("Saved pkl file to {}\n".format(args.outfile))
 
