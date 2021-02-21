@@ -1,0 +1,25 @@
+PROJECT: clas12
+JOBNAME: filtering_converting_32
+
+TRACK: analysis
+DISK_SPACE: 4 GB
+
+MEMORY: 1024 MB
+
+COMMAND:
+mkdir -p bin/
+mkdir -p target/
+cp /work/clas12/robertej/tools/filterEvents/bin/filterEvents bin/
+cp /work/clas12/robertej/tools/filterEvents/target/filter-1.2.jar target/
+cp /work/clas12/robertej/tools/hipo_to_root/convert .
+./bin/filterEvents --start=0% --end=100% --polarity=inbending  --twophotons  simu_143_dst.hipo
+rm simu_143_dst.hipo
+./convert
+
+INPUT_FILES:
+/volatile/clas12/robertej/testpi0sim1K/dsts/simu_143_dst.hipo
+
+SINGLE_JOB: true
+
+OUTPUT_DATA: ntuple.root
+OUTPUT_TEMPLATE:/volatile/clas12/robertej/testpi0sim1K/converted_filtered_dsts/simu_143_dst_filtered_converted.root
