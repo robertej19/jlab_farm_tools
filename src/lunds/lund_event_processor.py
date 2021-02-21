@@ -1,10 +1,10 @@
 #!/bin/python
 #cython: language_level=3
 
-import pandas as pd
 import argparse
 import sys
 import os
+import pickle
 
 
 import numpy as np 
@@ -51,6 +51,8 @@ def calculate_kinematics(event_frame):
     pro_mass = 0.938
     Ebeam_4mom = (10.6,0,0,10.6)
 
+    #print("Event frame is:")
+    #print(event_frame)
     photons = []
     for particle in event_frame:
         if particle[14] == 11:
@@ -128,20 +130,23 @@ def calculate_kinematics(event_frame):
     
 def process_lund_into_events(df,run_num):
     events_list = []
-    num_events = df["event_num"].max()
-    for ind in range(0,num_events+1):
+    #num_events = df["event_num"].max()
+    num_events = int(len(df)/4) #assuming there are 4 particles per event
+    #print("Num events is {}".format(num_events))
+    #sys.exit()
+    for ind in range(0,num_events):
         if ind % 100 ==0:
             print("On event {}".format(ind))
         #event_dataframe = df.query("event_num == {}".format(ind))
         #event_dataframe = df[df["event_num"]==ind]
         #print(df)
-        evdnp = df.to_numpy()
+        #evdnp = df.to_numpy()
 
 
         event_frame = []
-        for row in evdnp:
+        for row in df:
             if row[0]==ind:
-                event_frame.append(row.tolist())
+                event_frame.append(row)
         #print(evdnp[0:5])
         
 
@@ -180,12 +185,20 @@ if __name__ == "__main__":
 
     run_num = str(args.infile).split(".pkl")[0].split("_")[-1]
     
-    df = pd.read_pickle(args.infile)
 
+
+    #df = pd.read_pickle(args.infile)
+    with open(args.infile, 'rb') as f:
+        df = pickle.load(f)
+
+    
     events_list = process_lund_into_events(df,run_num)
-    df_out = pd.DataFrame(events_list, columns=out_labels)
 
-    df_out.to_pickle(args.outfile)
+    #df_out = pd.DataFrame(events_list, columns=out_labels)
+    #df_out.to_pickle(args.outfile)
+
+    with open(args.outfile, 'wb') as f:
+        pickle.dump(events_list, f)
 
 
 
