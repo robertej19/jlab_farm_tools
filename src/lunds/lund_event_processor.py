@@ -28,46 +28,35 @@ def manual_cross(v1,v2):
     v3 = (ele1,-1*(v1[0]*v2[2]-v1[2]*v2[0]),v1[1]*v2[0]-v1[0]*v2[1])
     return v3
 
-def unit_vector(v1):
-    """ Returns the unit vector of the vector.  """
-    #return vector / np.linalg.norm(vector)
+def calc_mag(v1):
     mag2 = v1[0]*v1[0]+v1[1]*v1[1]+v1[2]*v1[2]
     mag = mag2**0.5
 
+    return mag
+
+def unit_vector(v1):
+    """ Returns the unit vector of the vector.  """
+    #return vector / np.linalg.norm(vector)
+    mag = calc_mag(v1)
     uv = (v1[0]/mag,v1[1]/mag,v1[2]/mag)
+
     return uv
 
 
-
-
-def manual_arccos(theta):
-    #calc arc cosine
-
-    return 3
-
-
-
-def manual_clip(values):
+def manual_clip(values,min,max):
     #does something
 
-    return 3
+    return values
 
 
 def vec_angle(v1, v2):
-    """stolen from https://stackoverflow.com/questions/2827393/angles-between-two-n-dimensional-vectors-in-python/13849249#13849249"""
-    """ Returns the angle in radians between vectors 'v1' and 'v2'::
+    dot = manual_dot(v1,v2)
+    mag_a = calc_mag(v1)
+    mag_b = calc_mag(v2)
+    ratio = dot/mag_a/mag_b
+    angle_deg = math.acos(ratio)*180/3.141592653
 
-            >>> angle_between((1, 0, 0), (0, 1, 0))
-            1.5707963267948966
-            >>> angle_between((1, 0, 0), (1, 0, 0))
-            0.0
-            >>> angle_between((1, 0, 0), (-1, 0, 0))
-            3.141592653589793
-    """
-    v1_u = unit_vector(v1)
-    v2_u = unit_vector(v2)
-    return manual_arccos(manual_clip(manual_dot(v1_u, v2_u), -1.0, 1.0))*180/3.14159
-
+    return angle_deg
 
 
 
@@ -206,14 +195,7 @@ def process_lund_into_events(df,run_num):
 
 if __name__ == "__main__":
     
-    v1 = (1,2,3)
-    v2 = (1,2,83)
-
-    a = unit_vector(v1)
-    print(math.acos(0))
-    sys.exit()
-
-"""
+    
     parser = argparse.ArgumentParser(description="Get args",formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     
     default_pkl_inname = "lund_simu_998.pkl"
@@ -248,7 +230,7 @@ if __name__ == "__main__":
 
     with open(args.outfile, 'wb') as f:
         pickle.dump(events_list, f)
-"""
+
 
 
 
