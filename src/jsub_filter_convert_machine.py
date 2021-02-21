@@ -26,16 +26,21 @@ mkdir -p bin/
 mkdir -p target/
 cp {2}bin/filterEvents bin/
 cp {2}target/filter-1.2.jar target/
-cp {3} . 
+cp {11}convert .
 ./filterEvents --start={4} --end={5} --polarity={6} {7} {8}
+rm {12}
+./convert
+
+INPUT_FILES:
+{3}
 
 SINGLE_JOB: true
 
-OUTPUT_DATA: {9}_filtered.hipo
-OUTPUT_TEMPLATE:{10}{9}_filtered.hipo
+OUTPUT_DATA: ntuple.root
+OUTPUT_TEMPLATE:{10}{9}_filtered_converted.root
 """.format(count,args.track,args.filter_exedir,args.hipo_dir+filename,
     args.proc_start,args.proc_end,args.polarity,extra_args,
-    filename,filename_base,args.return_dir)
+    filename,filename_base,args.return_dir,args.convert_dir,filename)
     outfile.write(string)
     outfile.close()
 
@@ -52,11 +57,12 @@ if __name__ == "__main__":
     
     parser.add_argument("-r",help="Removes all files from output directory, if any existed",default=False,action='store_true')
     parser.add_argument("-n",type=int,help="Number of submission files",default=0)
-    parser.add_argument("--outdir",help="Specify full or relative path to output directory for jsub file",default=exe_abs_path+"../../sub_filters_warehouse/")
+    parser.add_argument("--outdir",help="Specify full or relative path to output directory for jsub file",default=exe_abs_path+"../../sub_filt_con_warehouse/")
     parser.add_argument("--filter_exedir",type=str,help="Specifcy full path of executables directory, otherwise uses default",default=exe_abs_path)
     parser.add_argument("--track",help="jsub track, e.g. debug, analysis",default="analysis")
     parser.add_argument("--return_dir",type=str,help="Output Dir for Farm Return File",default="/volatile/clas12/robertej/")
     parser.add_argument("--hipo_dir",type=str,help="Specifcy full path of hipo directory, otherwise uses default",default=exe_abs_path+"../../../hipotest/")
+    parser.add_argument("--convert_dir",help="specify full path of executible used to convert output into root file",default=exe_abs_path)
 
     #For filter options
     parser.add_argument("--proc_end",type=str,help="last event count, or percentage",default="100%")

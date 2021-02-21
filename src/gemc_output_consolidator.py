@@ -11,7 +11,7 @@ from shutil import copyfile
 
 def move_files(args,outdirs):
 
-    dir_list = os.listdir(args.gemcdir)
+    dir_list = sorted(os.listdir(args.gemcdir))
     lund_filename = 'lund.dat'
     dst_filename = 'dst.hipo'
 

@@ -15,7 +15,7 @@ def sub_jobs(args):
     if not os.path.isdir(args.jobsdir):
         print("{} directory not found, exiting".format(args.jobsdir))
         sys.exit()
-    jobs_list = os.listdir(args.jobsdir)
+    jobs_list = sorted(os.listdir(args.jobsdir))
     print("Found {} files in jobs directory".format(len(jobs_list)))
 
 
