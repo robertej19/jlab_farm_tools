@@ -23,3 +23,7 @@ https://scicomp.jlab.org/scicomp/index.html#/farmJobs/activeJob
 #How to transfer output files from GEMC to a different directory
 ./run/gemc_copier.exe --gemcdir=/volatile/clas12/osg/robertej/job_2408/output/ --outdir=/volatile/clas12/robertej/testpi0sim1K/ -l  
 As always, use ./run/gemc_copier.exe -h to see a full list of options
+
+#How to submit filtering jobs to batch farm
+./run/make_filter_jsubs.exe --hipo_dir <path to directory containing hipo files>
+ For full list of options, use -h option
