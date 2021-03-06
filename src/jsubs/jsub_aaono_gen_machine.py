@@ -69,20 +69,6 @@ if __name__ == "__main__":
     parser.add_argument("--out",help="lund input filename",default="aao_norad_input.inp")
     parser.add_argument("--track",help="jsub track, e.g. debug, analysis",default="analysis")
     
-    #these are required to be acknowledged to work on https://github.com/JeffersonLab/clas12-mcgen
-    """
-We used this criteria to check if the requirements are met:
-
-genName --trig 10 --docker --seed 1448577483
-
-This should produce a file genName.dat.
-
-The script requirements.sh will compile the generators, check for the executable names, 
-run them with their environment and the above options, and check for the output file. 
-It will output a table that is parsed below in the Requirements Summary.
-    """
-    
-
 
     args = parser.parse_args()
 
