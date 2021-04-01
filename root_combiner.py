@@ -34,7 +34,7 @@ if __name__ == "__main__":
         string_middle += """ch.Add("{}");
         """.format(file_name)
 
-    string_end = """ch.Merge("merged_{}_files.root);
+    string_end = """ch.Merge("merged_{}_files.root");
     """.format(len(onlyfiles))
     
     string_end_bracket = r"""
