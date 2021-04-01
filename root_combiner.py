@@ -31,8 +31,8 @@ if __name__ == "__main__":
     string_middle = ""
 
     for file_name in onlyfiles:
-        string_middle += """ch.Add("{}");
-        """.format(file_name)
+        string_middle += """ch.Add("{}{}");
+        """.format(args.root_dir,file_name)
 
     string_end = """ch.Merge("merged_{}_files.root");
     """.format(len(onlyfiles))
