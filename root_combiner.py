@@ -51,4 +51,4 @@ if __name__ == "__main__":
         print("Exiting\n")
         sys.exit()
     
-    print("Merging complete, merged root filename is: merged_{}_files.root)".format(len(onlyfiles)))
+    print("Merging complete, merged root filename is: merged_{}_files.root".format(len(onlyfiles)))
