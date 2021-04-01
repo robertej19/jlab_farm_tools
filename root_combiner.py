@@ -45,11 +45,10 @@ if __name__ == "__main__":
     print("finished making macro file, now executing in root")
     try:
         subprocess.run(["root","-q","combine_macro.C"])
-        return 0
     except OSError as e:
         print("\nError processing root macro")
         print("The error message was:\n %s - %s." % (e.filename, e.strerror))
         print("Exiting\n")
-        return -1
+        sys.exit()
     
     print("Merging complete, merged root filename is: merged_{}_files.root)".format(len(onlyfiles)))
