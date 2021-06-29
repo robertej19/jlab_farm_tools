@@ -1,0 +1,21 @@
+PROJECT: clas12
+JOBNAME: dvpipFilter66
+
+TRACK: analysis
+DISK_SPACE: 4 GB
+
+MEMORY: 1024 MB
+
+COMMAND:
+cp /work/clas12/robertej/hipo_to_root/convert . 
+./convert
+
+
+INPUT_FILES: 
+/work/clas12/robertej/filtered_skim8_files/skim8_005406_filtered.hipo
+
+
+SINGLE_JOB: true
+
+OUTPUT_DATA:ntuple.root 
+OUTPUT_TEMPLATE:/work/clas12/robertej/converted_filtered_skim8/skim8_005406_filtered.root
