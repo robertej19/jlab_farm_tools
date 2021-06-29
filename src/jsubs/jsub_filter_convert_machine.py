@@ -1,6 +1,4 @@
-#!/bin/python
-#cython: language_level=3
-
+#!/usr/bin/python3
 
 import random 
 import sys
@@ -25,18 +23,18 @@ COMMAND:
 mkdir -p bin/
 mkdir -p target/
 cp {2}bin/filterEvents bin/
-cp {2}target/filter-1.2.jar target/
-cp {11}convert .
+cp {2}target/filter-1.2.1.jar target/
+cp {11}convertRec .
 ./bin/filterEvents --start={4} --end={5} --polarity={6} {7} {8}
 rm {12}
-./convert
+./convertRec
 
 INPUT_FILES:
 {3}
 
 SINGLE_JOB: true
 
-OUTPUT_DATA: ntuple.root
+OUTPUT_DATA: recwithgen.root
 OUTPUT_TEMPLATE:{10}{9}_filtered_converted.root
 """.format(count,args.track,args.filter_exedir,args.hipo_dir+filename,
     args.proc_start,args.proc_end,args.polarity,extra_args,
@@ -50,8 +48,8 @@ if __name__ == "__main__":
     #getattr(sys, 'frozen', False)
     #if getattr(sys, 'frozen', False):
     __file__ = os.path.dirname(sys.executable)
-    #doesnt work if compiled: exe_abs_path = os.getcwd()+__file__.split(os.path.basename(__file__))[0]+"../../run/gen_processors/"
-    exe_abs_path = __file__.split(os.path.basename(__file__))[0]+"run/gen_processors/"
+    exe_abs_path = os.getcwd()+__file__.split(os.path.basename(__file__))[0]+"../../run/gen_processors/"
+    #exe_abs_path = __file__.split(os.path.basename(__file__))[0]+"run/gen_processors/"
 
     parser = argparse.ArgumentParser(description="Get args",formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     

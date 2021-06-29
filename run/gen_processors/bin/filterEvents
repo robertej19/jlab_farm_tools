@@ -1,0 +1,3 @@
+#!/bin/sh
+
+java -cp `dirname $0`/../target/filter-1.2.1.jar net.clasmit.particle $*
