@@ -82,7 +82,7 @@ def submit_generator_jsubs(args,params,logging_file):
     try:
         subprocess.run([executable,
             "--jobsdir", jsub_generator_dir])
-        logging_file.write("\n\nSubmitted JSub files to: {}".format(params.jsub_generator_dir))
+        logging_file.write("\n\nSubmitted JSub files with return to: {}".format(params.generator_return_dir))
         return 0
     except OSError as e:
         print("\nError creating generator input file")
@@ -90,6 +90,15 @@ def submit_generator_jsubs(args,params,logging_file):
         print("Exiting\n")
         logging_file.write("\n\nEvent Generation Jsub batch farm submission failed, error message: {}".format(e))
         return -1
+
+def gemc_submission_details(args,params,logging_file):
+    logging_file.write("\n\n On GEMC webportal (https://gemc.jlab.org/web_interface/index.php) Submit the following: \n")
+    for mag_field_config in params.mag_field_configs:
+        logging_file.write("\n\n Select LUND Files \n")
+        logging_file.write("Configuration: rga_fall2018 \n")
+        logging_file.write("Magnetic Fields: {} \n".format(mag_field_config))
+        logging_file.write("LUND Location: {} \n".format(params.generator_return_dir))
+        logging_file.write("Background Merging: No \n")
 
 if __name__ == "__main__":
     # The following is needed since an executable does not have __file__ defined, but when working in interpreted mode,
@@ -270,12 +279,18 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     configs = []
+    mag_field_configs = []
     if args.f18_in:
         configs.append("Fall_2018_Inbending")
+        mag_field_configs.append("tor-1.00_sol-1.00")
     if args.f18_out_100:
         configs.append("Fall_2018_Outbending_100")
+        mag_field_configs.append("tor+1.01_sol-1.00")
     if args.f18_out_101:
         configs.append("Fall_2018_Outbending_101")
+        mag_field_configs.append("tor+1.00_sol-1.00")
+
+
 
     if len(configs)==0:
         print("\n \n \n Error: No configurations selected. Use flags (-h) to set. Exiting \n \n \n")
@@ -310,18 +325,21 @@ if __name__ == "__main__":
     final_dir = args.base_dir+main_dir+ "/4_Final_Output_Files"
 
     class parameters:
-        def __init__(self,jgd,jfcd,grd,fcrd,fd):
+        def __init__(self,jgd,jfcd,grd,fcrd,fd,configs):
             self.jsub_generator_dir=jgd
             self.jsub_filter_convert_dir=jfcd
             self.generator_return_dir=grd
             self.filt_conv_return_dir=fcrd
             self.final_dir=fd
+            self.configs = configs
+
+    
     
     params = parameters(jsub_generator_dir,
             jsub_filter_convert_dir,
             generator_return_dir,
             filt_conv_return_dir,
-            final_dir)
+            final_dir,configs)
     
 
     readme_location = args.base_dir+main_dir+"/readme.txt"
