@@ -127,7 +127,7 @@ if __name__ == "__main__":
         # Jsub submitting tool
     location_of_jsubmitter = main_source_dir+"/jlab_farm_tools/src/jsubs/jsubmitter.py"
         # aao_(no)rad generator wrapper aka aao_gen
-    location_of_aao_gen = main_source_dir+"/aao_gen/gen_wrapper/batch_farm_executables/aao_gen.py"
+    location_of_aao_gen = main_source_dir+"/aao_gen/gen_wrapper/batch_farm_executables/src/aao_gen.py"
         # actual generator location: aao_norad
     location_of_aao_norad = main_source_dir+"/aao_gen/aao_norad/build/aao_norad.exe"
         # actual generator location: aao_rad
