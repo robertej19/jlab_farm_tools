@@ -32,51 +32,64 @@ This should produce a file genName.dat.
 """
 
 
-def generate_aao_jsub_files(args):
+def generate_aao_jsub_files(args,params,logging_file):
     executable = args.source_aao_rad_jsub if args.rad else args.source_aao_norad_jsub
 
     try:
         subprocess.run([executable,
-            "--input_exe_path", str(args.),
-            "--physics_model", str(args.),
-            "--flag_ehel", str(args.),
-            "--npart", str(args.),
-            "--epirea", str(args.),
-            "--ebeam", str(args.),
-            "--q2min", str(args.),
-            "--q2max", str(args.),
-            "--epmin", str(args.),
-            "--epmax", str(args.),
-            "--fmcall", str(args.),
-            "--boso", str(args.),
-            "--trig", str(args.),
-            "--precision", str(args.),
-            "--maxloops", str(args.),
-            "--generator_exe_path", str(args.),
-            "--filter_exe_path", str(args.),
-            "--xBmin", str(args.),
-            "--xBmax", str(args.),
-            "--w2min", str(args.),
-            "--w2max", str(args.),
-            "--tmin", str(args.),
-            "--tmax", str(args.),
-            "--outdir", str(args.),
-            "-r", str(args.),
-            "--seed", str(args.),
-            "--docker", str(args.),
-            "--track", str(args.),
-            "--jsub_textdir", str(args.),
-            "-n", str(args.),
-            "--return_dir", str(args.),
-            "--pi0_gen_exe_path", str(args.)])
+            "--input_exe_path", str(args.input_exe_path_norad),
+            "--physics_model", str(args.physics_model),
+            "--flag_ehel", str(args.flag_ehel),
+            "--npart", str(args.npart),
+            "--epirea", str(args.epirea),
+            "--ebeam", str(args.ebeam),
+            "--q2min", str(args.q2min),
+            "--q2max", str(args.q2max),
+            "--epmin", str(args.epmin),
+            "--epmax", str(args.epmax),
+            "--fmcall", str(args.fmcall),
+            "--boso", str(args.boso),
+            "--trig", str(args.trig),
+            "--precision", str(args.precision),
+            "--maxloops", str(args.maxloops),
+            "--generator_exe_path", str(args.aao_norad_exe_location),
+            "--filter_exe_path", str(args.filter_exe_path_norad),
+            "--xBmin", str(args.xBmin),
+            "--xBmax", str(args.xBmax),
+            "--w2min", str(args.w2min),
+            "--w2max", str(args.w2max),
+            "--tmin", str(args.tmin),
+            "--tmax", str(args.tmax),
+            "--outdir", str(args.outdir),
+            "--seed", str(args.seed),
+            "--docker", str(args.docker),
+            "--track", str(args.track),
+            "--jsub_textdir", params.jsub_generator_dir,
+            "-n", str(args.n),
+            "--return_dir", params.generator_return_dir,
+            "--pi0_gen_exe_path", str(args.pi0_gen_exe_path)])
+        logging_file.write("\n\nCreated JSub files at: {}".format(params.jsub_generator_dir))
         return 0
     except OSError as e:
         print("\nError creating generator input file")
         print("The error message was:\n %s - %s." % (e.filename, e.strerror))
         print("Exiting\n")
+        logging_file.write("\n\nEvent Generation Jsubs failed, error message: {}".format(e))
         return -1
 
-
+def submit_generator_jsubs(args,params,logging_file):
+    executable = args.jsubmitter
+    try:
+        subprocess.run([executable,
+            "--jobsdir", jsub_generator_dir])
+        logging_file.write("\n\nSubmitted JSub files to: {}".format(params.jsub_generator_dir))
+        return 0
+    except OSError as e:
+        print("\nError creating generator input file")
+        print("The error message was:\n %s - %s." % (e.filename, e.strerror))
+        print("Exiting\n")
+        logging_file.write("\n\nEvent Generation Jsub batch farm submission failed, error message: {}".format(e))
+        return -1
 
 if __name__ == "__main__":
     # The following is needed since an executable does not have __file__ defined, but when working in interpreted mode,
@@ -93,8 +106,8 @@ if __name__ == "__main__":
 
     now = datetime.now()
     dt_string = now.strftime("%Y%m%d_%H%M_%s")
-    main_dir = "simulations_"+dt_string
-    subdirs = ["0_Batch_Farm_Submissions","1_Generated_Events",
+    main_dir = "/simulations_"+dt_string
+    subdirs = ["0_JSub_Factory","1_Generated_Events",
             "2_GEMC_DSTs","3_Filtered_Converted_Root_Files","4_Final_Output_Files"]
 
 
@@ -103,7 +116,7 @@ if __name__ == "__main__":
         # Jsub file creator for rad generator
     location_of_jsub_factory_aao_norad = main_source_dir + "/aao_gen/gen_wrapper/batch_farm_executables/src/norad/jsub_aao_norad_generator.py"
         # Jsub submitting tool
-    location_of_jsubmitter = main_source_dir+"jlab_farm_tools/src/jsubs/jsubmitter.py"
+    location_of_jsubmitter = main_source_dir+"/jlab_farm_tools/src/jsubs/jsubmitter.py"
         # aao_(no)rad generator wrapper aka aao_gen
     location_of_aao_gen = main_source_dir+"/aao_gen/gen_wrapper/batch_farm_executables/aao_gen.py"
         # actual generator location: aao_norad
@@ -136,7 +149,7 @@ if __name__ == "__main__":
             #Jsub file creator for rad generator
     parser.add_argument("--source_aao_rad_jsub",help="Location for rad generator jsub creator",default=location_of_jsub_factory_aao_rad)
             #Jsub submitting tool
-    XXXXXXX put in location of jsubmitter
+    parser.add_argument("--jsubmitter",help="Location for jsubmission utility",default=location_of_jsubmitter)
             # aao_(no)rad generator wrapper aka aao_gen
     parser.add_argument("--pi0_gen_exe_path",help="Path to lund filter executable",default=location_of_aao_gen)
 
@@ -156,18 +169,12 @@ if __name__ == "__main__":
             #This arguement can be ignored and should be deleted
     parser.add_argument("--outdir",help="Location of intermediate return files between generation and filtering, can be ignored for batch farm",default="output/")
 
-
-    main_dir = "simulations_"+dt_string
-    subdirs = ["0_JSub_Factory","1_Generated_Events",
-            "2_GEMC_DSTs","3_Filtered_Converted_Root_Files","4_Final_Output_Files"]
-
-
    #File structure:
     # simulations_20210341014_2302
     # ├── 0_Jsub_factory
-        # │   ├── generation
+        # │   ├── Generation
             # │   │   └── jsub_gen_#.txt
-        # │   ├── filtering_converting
+        # │   ├── Filtering_Converting
             # │   ├── config_1
                 # │   │   ├── filt_conv_recon
                     # │   │   └── jsub_fc_config_#_recon_#.txt
@@ -208,7 +215,7 @@ if __name__ == "__main__":
                 # │   │   │   └── dst_fc_config_#_fc_recon_#.root
             # │   │   ├── filt_conv_recon root files
                 # │   │   │   └── dst_fc_config_#__gen_#.root
-    # ├── 5_Final files
+    # ├── 4_Final files
         # │   ├── config_1
                 # │   │   └── merged_recon.root
                 # │   │   └── merged_gen.root
@@ -218,24 +225,13 @@ if __name__ == "__main__":
         # │   ├── config_3
                 # │   │   └── merged_recon.root
                 # │   │   └── merged_gen.root
-
-
-
-    #Location of return files on local server:
-    parser.add_argument("--jsub_generator_dir",help="Directory containing jsub generation scripts",default=xxxxx "/submission_warehouse/")
-    parser.add_argument("--jsub_filter_convert_dir",help="Directory containing jsub filtering converting scripts",default=xxxxx "/submission_warehouse/")
-
-
-    parser.add_argument("--return_dir",type=str,help="Directory you want batch farm files returned to",default="/volatile/clas12/robertej/")
-
-
+    
 
     #########################################################
 
     #Specific to creating jsub files
     parser.add_argument("--track",help="jsub track, e.g. debug, analysis",default="analysis")
     parser.add_argument("-n",type=int,help="Number of batch submission text files",default=1)
-    parser.add_argument("-r",help="Removes all files from output directory, if any existed",default=False,action='store_true')
 
 
     #Options for generator and generated event filtering
@@ -307,17 +303,40 @@ if __name__ == "__main__":
     for directory in subdirs:
         subprocess.call(['mkdir','-p',args.base_dir+main_dir+"/"+directory])
 
+    jsub_generator_dir = args.base_dir+main_dir+ "/0_JSub_Factory/Generation/"
+    jsub_filter_convert_dir = args.base_dir+main_dir+ "/0_JSub_Factory/Filtering_Converting/"    
+    generator_return_dir  = args.base_dir+main_dir+ "/1_Generated_Events/"
+    filt_conv_return_dir = args.base_dir+main_dir+ "/3_Filtered_Converted_Root_Files"
+    final_dir = args.base_dir+main_dir+ "/4_Final_Output_Files"
+
+    class parameters:
+        def __init__(self,jgd,jfcd,grd,fcrd,fd):
+            self.jsub_generator_dir=jgd
+            self.jsub_filter_convert_dir=jfcd
+            self.generator_return_dir=grd
+            self.filt_conv_return_dir=fcrd
+            self.final_dir=fd
+    
+    params = parameters(jsub_generator_dir,
+            jsub_filter_convert_dir,
+            generator_return_dir,
+            filt_conv_return_dir,
+            final_dir)
+    
 
     readme_location = args.base_dir+main_dir+"/readme.txt"
     logging_file = open(readme_location, "a")
     logging_file.write("Simulation Start Date: {}".format(now))
     
 
-    
+    #########
+    # NEED TO INCLUDE SPLITTING MECHANISM OVER PHASE SPACE
     # Generate Lund files
         # Create jsub files for lunds
+    generate_aao_jsub_files(args,params,logging_file)
         # Submit the jsub files
-    generate_aao_jsub_files(args)
+    submit_generator_jsubs(args,params,logging_file)
+
 
     # Submit jobs to GEMC through webportal
         # Give instructions
@@ -333,139 +352,3 @@ if __name__ == "__main__":
 
 
     logging_file.close()
-
-    sys.exit()
-    #File structure:
-    # repository head
-    # ├── aao_norad
-    # │   ├── build
-    # │   │   └── aao_norad.exe
-    # ├── aao_rad
-    # ├── gen_wrapper
-    # │   ├── run
-    # │   │   ├── input_file_maker_aao_norad.exe
-    # │   │   └── lund_filter.exe
-    # │   └── src
-    # │       ├── aao_norad_text.py
-    # │       ├── input_file_maker_aao_norad.py
-    # │       ├── lund_filter.py
-    # │       └── pi0_gen_wrapper.py
-
-    slash = "/"
-    #repo_base_dir = slash.join(full_file_path.split(slash)[:-1])
-    repo_base_dir = slash.join(full_file_path.split(slash)[:-4])
-    output_file_path = repo_base_dir + "/output/"
-
-    norad_input_file_maker_path = repo_base_dir + "/gen_wrapper/batch_farm_executables/src/norad/input_file_maker_aao_norad.py"
-    rad_input_file_maker_path = repo_base_dir + "/gen_wrapper/batch_farm_executables/src/rad/input_file_maker_aao_rad.py"
-
-    norad_lund_filter_path = repo_base_dir + "/gen_wrapper/batch_farm_executables/src/norad/lund_filter_norad.py"
-    rad_lund_filter_path = repo_base_dir + "/gen_wrapper/batch_farm_executables/src/rad/lund_filter_rad.py"
-
-
-    aao_norad_path = repo_base_dir + "/aao_norad/build/aao_norad.exe"
-    aao_rad_path = repo_base_dir + "/aao_rad/build/aao_rad.exe"
-
-
-
-    parser = argparse.ArgumentParser(description="""CURRENTLY ONLY WORKS WITH AAO_NORAD 4 PARTICLE FINAL STATE \n
-                                This script: \n
-                                1.) Creates an input file for aao_norad \n
-                                2.) Generates specified number of events \n
-                                3.) Filters generated events based off specifications \n
-                                4.) Returns .dat data file""",formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-   
-    #General options
-    parser.add_argument("--rad",help="Uses radiative generator instead of nonradiative one, CURRENTLY NOT WORKING",default=False,action='store_true')
-
-    #For step 1: input_file_maker_aao_norad
-    parser.add_argument("--input_exe_path",help="Path to input file maker executable",default=norad_input_file_maker_path)
-    parser.add_argument("--physics_model",help="Physics model: 1=A0, 4=MAID98, 5=MAID2000",default=5)
-    parser.add_argument("--flag_ehel",help="0= no polarized electron, 1=polarized electron",default=1)
-    parser.add_argument("--npart",help="number of particles in BOS banks: 2=(e-,h+), 3=(e-,h+,h0)",default=3)
-    parser.add_argument("--epirea",help="final state hadron: 1=pi0, 3=pi+",default=1)
-    parser.add_argument("--ebeam",help="incident electron beam energy in GeV",default=10.6)
-    parser.add_argument("--q2min",help="minimum Q^2 limit in GeV^2",default=0.2)
-    parser.add_argument("--q2max",help="maximum Q^2 limit in GeV^2",default=10.6)
-    parser.add_argument("--epmin",help="minimum scattered electron energy limits in GeV",default=0.2)
-    parser.add_argument("--epmax",help="maximum scattered electron energy limits in GeV",default=10.6)
-    parser.add_argument("--fmcall",help="factor to adjust the maximum cross section, used in M.C. selection",default=1.0)
-    parser.add_argument("--boso",help="1=bos output, 0=no bos output",default=1)
-    parser.add_argument("--seed",help="0= use unix timestamp from machine time to generate seed, otherwise use given value as seed",default=0)
-    parser.add_argument("--trig",type=int,help="number of generated events",default=10000)
-    parser.add_argument("--precision",type=float,help="Enter how close, in percent, you want the number of filtered events to be relative to desired events",default=5)
-    parser.add_argument("--maxloops",type=int,help="Enter the number of generation iteration loops permitted to converge to desired number of events",default=10)
-    parser.add_argument("--input_filename",help="filename for aao_norad",default="aao_norad_input.inp")
-
-
-    #Arguements specific to aao_rad
-    parser.add_argument("--int_region",help="the sizes of the integration regions",default =".20 .12 .20 .20")
-    parser.add_argument("--err_max",help="limit on the error in (mm)**2",default=0.2)
-    parser.add_argument("--target_len",help="target cell length (cm)",default=5)
-    parser.add_argument("--target_rad",help="target cell cylinder radius",default=0.43)
-    parser.add_argument("--cord_x",help="x-coord of beam position",default=0.0)
-    parser.add_argument("--cord_y",help="y-coord of beam position",default=0.0)
-    parser.add_argument("--cord_z",help="z-coord of beam position",default=0.0)
-    parser.add_argument("--rad_emin",help="minimum photon energy for integration",default=0.005)
-    parser.add_argument("--sigr_max_mult",help="a multiplication factor for sigr_max",default=0.0)
-    parser.add_argument("--sigr_max",help="sigr_max",default=0.005)
-
-
-
-    #For step2: (optional) set path to aao_norad generator
-    parser.add_argument("--generator_exe_path",help="Path to generator executable",default=aao_norad_path)
-
-    #For step3: (optional) set path to lund filter script and get filtering arguemnets
-    parser.add_argument("--xBmin",type=float,help='minimum Bjorken X value',default=-1)
-    parser.add_argument("--xBmax",type=float,help='maximum Bjorken X value',default=10)
-    parser.add_argument("--w2min",type=float,help='minimum w2 value, in GeV^2',default=-1)
-    parser.add_argument("--w2max",type=float,help='maximum w2 value, in GeV^2',default=100)
-    parser.add_argument("--tmin",type=float,help='minimum t value, in GeV^2',default=-1)
-    parser.add_argument("--tmax",type=float,help='maximum t value, in GeV^2',default=100)
-    parser.add_argument("--filter_infile",help="specify input lund file name. Currently only works for 4-particle final state DVPiP",default="aao_norad.lund")
-    parser.add_argument("--filter_outfile",help='specify processed lund output file name',default="aao_gen.dat")
-   
-    #Specify output directory for lund file
-    parser.add_argument("--filter_exe_path",help="Path to lund filter executable",default=norad_lund_filter_path)
-    parser.add_argument("--outdir",help="Specify full or relative path to output directory final lund file",default=output_file_path)
-    parser.add_argument("-r",help="Removes all files from output directory, if any existed",default=False,action='store_true')
-
-    #For conforming with clas12-mcgen standards
-    parser.add_argument("--docker",help="this arguement is ignored, but needed for inclusion in clas12-mcgen",default=False,action='store_true')
-
-
-    if args.rad:
-        if args.generator_exe_path==aao_norad_path:
-            args.generator_exe_path = aao_rad_path #change to using radiative generator
-        if args.filter_infile == "aao_norad.lund":
-            args.filter_infile = "aao_rad.lund" #change to using radiative generator
-        if args.input_exe_path == norad_input_file_maker_path:
-            args.input_exe_path = rad_input_file_maker_path
-        if args.input_filename == "aao_norad_input.inp":
-            args.input_filename = "aao_rad_input.inp" #change to using radiative generator
-        if args.filter_exe_path == norad_lund_filter_path:
-            args.filter_exe_path = rad_lund_filter_path
-        args.npart = 4 #for now, mandatory switch
-
-
-    if not os.path.isdir(args.outdir):
-        print(args.outdir+" is not present, creating now")
-        subprocess.call(['mkdir','-p',args.outdir])
-    else:
-        print(args.outdir + "exists already")
-        if args.r:
-            print("trying to remove output dir")
-            try:
-                shutil.rmtree(args.outdir)
-            except OSError as e:
-                print ("Error removing dir: %s - %s." % (e.filename, e.strerror))
-                print("trying to remove dir again")
-                try:
-                    shutil.rmtree(args.outdir)
-                except OSError as e:
-                    print ("Error removing dir: %s - %s." % (e.filename, e.strerror))
-                    print("WARNING COULD NOT CLEAR OUTPUT DIRECTORY")
-            subprocess.call(['mkdir','-p',args.outdir])
-    
-    print("Generating {} DVPiP Events".format(args.trig))
-    gen_events(args,repo_base_dir)
