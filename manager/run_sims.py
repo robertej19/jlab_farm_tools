@@ -141,7 +141,7 @@ if __name__ == "__main__":
                     3.) """,formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     #Directory Structure
-    parser.add_argument("--base_dir",help="Location for directory containing all files",default='/volatile/clas12/robertej/')
+    parser.add_argument("--base_dir",help="Location for directory containing all files",default='/volatile/clas12/robertej')
         
         #Executables locations
             #Jsub file creator for norad generator
