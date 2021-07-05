@@ -357,7 +357,7 @@ if __name__ == "__main__":
         # Create jsub files for lunds
     generate_aao_jsub_files(args,params,logging_file)
         # Submit the jsub files
-    #submit_generator_jsubs(args,params,logging_file)
+    submit_generator_jsubs(args,params,logging_file)
     gemc_submission_details(args,params,logging_file)
 
     # Submit jobs to GEMC through webportal
