@@ -67,6 +67,7 @@ def generate_aao_jsub_files(args,params,logging_file):
             "--jsub_textdir", params.jsub_generator_dir,
             "-n", str(args.n),
             "--return_dir", params.generator_return_dir,
+            "--multi_phase_space",
             "--pi0_gen_exe_path", str(args.pi0_gen_exe_path)])
         logging_file.write("\n\nCreated JSub files at: {}".format(params.jsub_generator_dir))
         return 0
@@ -241,6 +242,7 @@ if __name__ == "__main__":
     #Specific to creating jsub files
     parser.add_argument("--track",help="jsub track, e.g. debug, analysis",default="analysis")
     parser.add_argument("-n",type=int,help="Number of batch submission text files",default=1)
+    parser.add_argument("--multi_phase_space",help="split xbmin-xmax q2min-q2max over smaller phase spaces",default=False,action='store_true')
 
 
     #Options for generator and generated event filtering
@@ -325,12 +327,13 @@ if __name__ == "__main__":
     final_dir = args.base_dir+main_dir+ "/4_Final_Output_Files"
 
     class parameters:
-        def __init__(self,jgd,jfcd,grd,fcrd,fd,configs):
+        def __init__(self,jgd,jfcd,grd,fcrd,fd,configs,mag_field_configs):
             self.jsub_generator_dir=jgd
             self.jsub_filter_convert_dir=jfcd
             self.generator_return_dir=grd
             self.filt_conv_return_dir=fcrd
             self.final_dir=fd
+            self.mag_field_configs = mag_field_configs
             self.configs = configs
 
     
@@ -339,7 +342,8 @@ if __name__ == "__main__":
             jsub_filter_convert_dir,
             generator_return_dir,
             filt_conv_return_dir,
-            final_dir,configs)
+            final_dir,configs,
+            mag_field_configs)
     
 
     readme_location = args.base_dir+main_dir+"/readme.txt"
@@ -353,8 +357,8 @@ if __name__ == "__main__":
         # Create jsub files for lunds
     generate_aao_jsub_files(args,params,logging_file)
         # Submit the jsub files
-    submit_generator_jsubs(args,params,logging_file)
-
+    #submit_generator_jsubs(args,params,logging_file)
+    gemc_submission_details(args,params,logging_file)
 
     # Submit jobs to GEMC through webportal
         # Give instructions
