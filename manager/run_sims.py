@@ -217,7 +217,7 @@ if __name__ == "__main__":
         # filter convert jsub machine
     location_of_fc_jsub_machine = main_source_dir + "/jlab_farm_tools/src/jsubs/jsub_filter_convert_machine.py"
         #filter exe path
-    location_of_filter_exe = main_source_dir + "/filter/fiducial-filtering/filterEvents/bin/filterEvents"
+    location_of_filter_exe = main_source_dir + "/filter/fiducial-filtering/filterEvents/"
 
     location_of_converter_gen_exe = main_source_dir +  "/convertingHipo/minimal/convertGen"
     location_of_converter_recon_exe = main_source_dir + "/convertingHipo/minimal/convertRec"

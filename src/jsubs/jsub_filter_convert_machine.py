@@ -8,6 +8,7 @@ import shutil
 
 def gen_jsub(args,extra_args,count,filename):
 
+    converter_name = "convertRec" if args.convert_type =="recon" else "convertGen"
     filename_base = filename.split(".hipo")[0]
     print(filename_base)
     outfile = open(args.outdir+"jsub_filtering_job_{}.txt".format(count),"w")
@@ -24,10 +25,10 @@ mkdir -p bin/
 mkdir -p target/
 cp {2}bin/filterEvents bin/
 cp {2}target/filter-1.2.1.jar target/
-cp {11}convertRec .
+cp {11}{13} .
 ./bin/filterEvents --start={4} --end={5} --polarity={6} {7} {8}
 rm {12}
-./convertRec
+./{13}
 
 INPUT_FILES:
 {3}
@@ -38,7 +39,7 @@ OUTPUT_DATA: recwithgen.root
 OUTPUT_TEMPLATE:{10}{9}_filtered_converted.root
 """.format(count,args.track,args.filter_exedir,args.hipo_dir+filename,
     args.proc_start,args.proc_end,args.polarity,extra_args,
-    filename,filename_base,args.return_dir,args.convert_dir,filename)
+    filename,filename_base,args.return_dir,args.convert_dir,filename,converter_name)
     outfile.write(string)
     outfile.close()
 
@@ -61,7 +62,8 @@ if __name__ == "__main__":
     parser.add_argument("--return_dir",type=str,help="Output Dir for Farm Return File",default="/volatile/clas12/robertej/")
     parser.add_argument("--hipo_dir",type=str,help="Specifcy full path of hipo directory, otherwise uses default",default=exe_abs_path+"../../../hipotest/")
     parser.add_argument("--convert_dir",help="specify full path of executible used to convert output into root file",default=exe_abs_path)
-
+    parser.add_argument("--convert_type",help="recon | gen - use to specify if using recon or gen",default="recon")
+    
     #For filter options
     parser.add_argument("--proc_end",type=str,help="last event count, or percentage",default="100%")
     parser.add_argument("--proc_start",type=str,help="starting event count, or percentage",default="0%")
