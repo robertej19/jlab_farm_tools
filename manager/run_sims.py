@@ -104,6 +104,9 @@ def gemc_submission_details(args,params,logging_file):
     logging_file.write("\n\n When GEMC is complete, run the following: \n")
     logging_file.write("python3.6 {}".format(params.output_location+"/copyscript.py"))
 
+    logging_file.write("\n\n When copying files from GEMC is complete, run the following: \n")
+    logging_file.write("python3.6 {}".format(params.output_location+"/filter_convert_jsub.py"))
+
 def generate_copy_script(args,params,logging_file):
     logging_file = open(params.output_location+"/copyscript.py", "a")
     logging_file.write("""#!/bin/python3.6m
@@ -119,7 +122,54 @@ except OSError as e:
     print("Error encountered, copying failed")
     print("Error message was:",e.strerror)""".format(config,args.dst_copier_path,params.output_location+"/2_GEMC_DSTs/"+config+"/"))
     
+def generate_fc_script(args,params,logging_file):
+    logging_file = open(params.output_location+"/filter_convert_jsub.py", "a")
+    logging_file.write("""#!/bin/python3.6m
+import subprocess""")
+    
+    for option in ["/Gen","/Recon"]:
+        converter_exe = args.converter_recon_exe_path if option=="/Recon" else args.converter_gen_exe_path
+        for index,config in enumerate(params.configs):
+            polarity = params.polarities[index]
+            logging_file.write("""
+try:
+    print("Creating jsub text tiles")
+    subprocess.run(['python3.6','{}',
+                    "--polarity",'{}',
+                    "--outdir",'{}',
+                    "--return_dir",'{}',
+                    "--hipo_dir",'{}',
+                    "--filter_exedir",'{}'
+                    "--conver_dir",'{}',
+                    "--twophotons"])
+    try:
+        subprocess.run(['{}',
+            "--jobsdir", '{}'])
+        return 0
+    except OSError as e:
+        print("Error encountered, could not submit fc jsub jobs")
+except OSError as e:
+    print("Error encountered, fc jsub creation failed")
+    print("Error message was:",e.strerror)""".format(filt_conv_jsub_path,
+                polarity,
+                params.output_location+"/0_JSub_Factory/Filter_Convert/"+config+option,
+                params.output_location+"/3_Filtered_Converted_Root_Files/"+config+option,
+                params.output_location+"/2_GEMC_DSTs/"+config,
+                args.filter_exe_path,
+                converter_exe,
+                args.jsubmitter,
+                params.output_location+"/0_JSub_Factory/Filter_Convert/"+config+option))
 
+
+#         logging_file.write("""
+# gemc_return_location = input("Enter full path (e.g. /volatile/.../job_2814/output/) of GEMC output dir for configuration '{}': ")
+# try:
+#     print("Copying files from GEMC output to local dir")
+#     subprocess.run(['python3.6','{}',"-d",gemc_return_location,"-o",'{}'])
+# except OSError as e:
+#     print("Error encountered, copying failed")
+#     print("Error message was:",e.strerror)""".format(config,args.dst_copier_path,params.output_location+"/2_GEMC_DSTs/"+config+"/"))
+    
     
 
 
@@ -165,7 +215,13 @@ if __name__ == "__main__":
     location_of_event_filter_aao_rad = main_source_dir+"/aao_gen/gen_wrapper/batch_farm_executables/src/rad/lund_filter_rad.py"
         # dst copier path
     location_of_dst_copier = main_source_dir+"/jlab_farm_tools/other-tools/dst_copier_from_gemc_output.py"
+        # filter convert jsub machine
+    location_of_fc_jsub_machine = main_source_dir + "/jlab_farm_tools/src/jsubs/jsub_filter_convert_machine.py"
+        #filter exe path
+    location_of_filter_exe = main_source_dir + "/filter/fiducial-filtering/filterEvents/bin/filterEvents"
 
+    location_of_converger_gen_exe = main_source_dir +  "/convertingHipo/minimal/convertGen"
+    location_of_converger_recon_exe = main_source_dir + "/convertingHipo/minimal/convertRec"
 
     parser = argparse.ArgumentParser(description="""Need to write the description \n
                     This script: \n
@@ -200,6 +256,14 @@ if __name__ == "__main__":
     parser.add_argument("--filter_exe_path_rad",help="Path to lund filter executable",default=location_of_event_filter_aao_rad)
             # dst copier path
     parser.add_argument("--dst_copier_path",help="Path to dst copier",default=location_of_dst_copier)
+            # Filter & Convert machine jsub path
+    parser.add_argument("--filt_conv_jsub_path",help="Location for filt-convert jsub creator",default=location_of_fc_jsub_machine)
+                # Filter executable path
+    parser.add_argument("--filter_exe_path",help="Location for filter executable path",default=location_of_filter_exe)
+                # gen converter executable path
+    parser.add_argument("--converter_gen_exe_path",help="Location for converter for gen executable path",default=location_of_converter_gen_exe)
+                    #recon converter executable path
+    parser.add_argument("--converter_recon_exe_path",help="Location for converter for recon executable path",default=location_of_converger_recon_exe)
     
 
             #This arguement can be ignored and should be deleted
@@ -309,15 +373,20 @@ if __name__ == "__main__":
     
     configs = []
     mag_field_configs = []
+    polarities = []
     if args.f18_in:
         configs.append("Fall_2018_Inbending")
         mag_field_configs.append("tor-1.00_sol-1.00")
+        polarities.append("inbending")
     if args.f18_out_100:
         configs.append("Fall_2018_Outbending_100")
         mag_field_configs.append("tor+1.01_sol-1.00")
+        polarities.append("outbending")
     if args.f18_out_101:
         configs.append("Fall_2018_Outbending_101")
         mag_field_configs.append("tor+1.00_sol-1.00")
+        polarities.append("outbending")
+
 
 
 
@@ -349,6 +418,8 @@ if __name__ == "__main__":
     for directory in subdirs:
         subprocess.call(['mkdir','-p',output_location+"/"+directory])
     for config in configs:
+        subprocess.call(['mkdir','-p',output_location+"/0_JSub_Factory/Filter_Convert/"+config+"/Gen"])
+        subprocess.call(['mkdir','-p',output_location+"/0_JSub_Factory/Filter_Convert/"+config+"/Recon"])
         subprocess.call(['mkdir','-p',output_location+"/2_GEMC_DSTs/"+config])
         subprocess.call(['mkdir','-p',output_location+"/3_Filtered_Converted_Root_Files/"+config+"/Gen"])
         subprocess.call(['mkdir','-p',output_location+"/3_Filtered_Converted_Root_Files/"+config+"/Recon"])
@@ -362,7 +433,7 @@ if __name__ == "__main__":
     final_dir = output_location+ "/4_Final_Output_Files"
 
     class parameters:
-        def __init__(self,jgd,jfcd,grd,fcrd,fd,configs,mag_field_configs,output_location):
+        def __init__(self,jgd,jfcd,grd,fcrd,fd,configs,mag_field_configs,output_location,polarities):
             self.jsub_generator_dir=jgd
             self.jsub_filter_convert_dir=jfcd
             self.generator_return_dir=grd
@@ -371,6 +442,8 @@ if __name__ == "__main__":
             self.mag_field_configs = mag_field_configs
             self.configs = configs
             self.output_location = output_location
+            self.polarities = polarities
+
 
     
 
@@ -380,7 +453,8 @@ if __name__ == "__main__":
             filt_conv_return_dir,
             final_dir,configs,
             mag_field_configs,
-            output_location)
+            output_location,
+            polarities)
     
     logging_file = open(output_location+"/readme.txt", "a")
     logging_file.write("Simulation Start Date: {}".format(now))
@@ -406,7 +480,7 @@ if __name__ == "__main__":
 
     # Filter and convert files
         # Generate a sh script to generate and submit jsubs, and give running insructions
-    #generate_fc_script(args,params,logging_file)
+    generate_fc_script(args,params,logging_file)
 
     # Generate emails and send out when various steps are complete
     #generate_root_merger_script(args,params,logging_file)
