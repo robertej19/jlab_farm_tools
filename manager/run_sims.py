@@ -101,13 +101,15 @@ def gemc_submission_details(args,params,logging_file):
         logging_file.write("LUND Location: {} \n".format(params.generator_return_dir))
         logging_file.write("Background Merging: No \n")
 
+    logging_file.write("\n\n When GEMC is complete, run the following: \n")
+    logging_file.write("python {}".format(params.output_location+"/copyscript.py"))
+
 def generate_copy_script(args,params,logging_file):
     logging_file = open(params.output_location+"/copyscript.py", "a")
     logging_file.write("""#!/bin/python3.6m
 import subprocess""")
     
     for config in params.configs:
-        print(config)
         logging_file.write("""
 gemc_return_location = input("Enter full path (e.g. /volatile/.../job_2814/output/) of GEMC output dir for configuration '{}': ")
 try:
@@ -115,7 +117,9 @@ try:
     subprocess.run(['{}',"-d",gemc_return_location,"-o",'{}'])
 except OSError as e:
     print("Error encountered, copying failed")
-    print("Error message was:",e.strerror)""".format(config,args.dst_copier_path,config))
+    print("Error message was:",e.strerror)""".format(config,args.dst_copier_path,params.output_location+"/2_GEMC_DSTs/"+config))
+    
+
     
 
 
@@ -324,6 +328,8 @@ if __name__ == "__main__":
     if args.test:
         args.base_dir = "/".join(full_file_path.split("/")[:-1])
         print("on local, base dir set to {}".format(args.base_dir))
+    output_location = args.base_dir+main_dir
+
 
     if not os.path.isdir(args.base_dir):
         print("The base directory {} does not exist, exiting".format(args.base_dir))
@@ -331,29 +337,29 @@ if __name__ == "__main__":
         print("Use the flag --base_dir to set a different base directory")
         sys.exit()
 
-    if not os.path.isdir(args.base_dir+main_dir):
-        subprocess.call(['mkdir','-p',args.base_dir+main_dir])
-        print("Making main directory at {}".format(args.base_dir+main_dir))
+    if not os.path.isdir(output_location):
+        subprocess.call(['mkdir','-p',output_location])
+        print("Making main directory at {}".format(output_location))
     else:
-        print("Main directory already exists at {}, exiting".format(args.base_dir+main_dir))
+        print("Main directory already exists at {}, exiting".format(output_location))
         sys.exit()
 
     #for config in configs:
     #    print("Creating directory structure for {} configuration run".format(config))
     for directory in subdirs:
-        subprocess.call(['mkdir','-p',args.base_dir+main_dir+"/"+directory])
+        subprocess.call(['mkdir','-p',output_location+"/"+directory])
     for config in configs:
-        subprocess.call(['mkdir','-p',args.base_dir+main_dir+"/2_GEMC_DSTs/"+config])
-        subprocess.call(['mkdir','-p',args.base_dir+main_dir+"/3_Filtered_Converted_Root_Files/"+config+"/Gen"])
-        subprocess.call(['mkdir','-p',args.base_dir+main_dir+"/3_Filtered_Converted_Root_Files/"+config+"/Recon"])
-        subprocess.call(['mkdir','-p',args.base_dir+main_dir+"/4_Final_Output_Files/"+config])
+        subprocess.call(['mkdir','-p',output_location+"/2_GEMC_DSTs/"+config])
+        subprocess.call(['mkdir','-p',output_location+"/3_Filtered_Converted_Root_Files/"+config+"/Gen"])
+        subprocess.call(['mkdir','-p',output_location+"/3_Filtered_Converted_Root_Files/"+config+"/Recon"])
+        subprocess.call(['mkdir','-p',output_location+"/4_Final_Output_Files/"+config])
 
 
-    jsub_generator_dir = args.base_dir+main_dir+ "/0_JSub_Factory/Generation/"
-    jsub_filter_convert_dir = args.base_dir+main_dir+ "/0_JSub_Factory/Filtering_Converting/"    
-    generator_return_dir  = args.base_dir+main_dir+ "/1_Generated_Events/"
-    filt_conv_return_dir = args.base_dir+main_dir+ "/3_Filtered_Converted_Root_Files"
-    final_dir = args.base_dir+main_dir+ "/4_Final_Output_Files"
+    jsub_generator_dir = output_location+ "/0_JSub_Factory/Generation/"
+    jsub_filter_convert_dir = output_location+ "/0_JSub_Factory/Filtering_Converting/"    
+    generator_return_dir  = output_location+ "/1_Generated_Events/"
+    filt_conv_return_dir = output_location+ "/3_Filtered_Converted_Root_Files"
+    final_dir = output_location+ "/4_Final_Output_Files"
 
     class parameters:
         def __init__(self,jgd,jfcd,grd,fcrd,fd,configs,mag_field_configs,output_location):
@@ -367,7 +373,6 @@ if __name__ == "__main__":
             self.output_location = output_location
 
     
-    output_location = args.base_dir+main_dir
 
     params = parameters(jsub_generator_dir,
             jsub_filter_convert_dir,
@@ -392,7 +397,7 @@ if __name__ == "__main__":
         submit_generator_jsubs(args,params,logging_file)
 
     # Submit jobs to GEMC through webportal
-    #gemc_submission_details(args,params,logging_file)
+    gemc_submission_details(args,params,logging_file)
 
 
     # Copy DST files to local directories
