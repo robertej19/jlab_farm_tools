@@ -25,10 +25,10 @@ mkdir -p bin/
 mkdir -p target/
 cp {2}bin/filterEvents bin/
 cp {2}target/filter-1.2.1.jar target/
-cp {11}{13} .
+cp {11} ./converter
 ./bin/filterEvents --start={4} --end={5} --polarity={6} {7} {8}
 rm {12}
-./{13}
+./converter
 
 INPUT_FILES:
 {3}
@@ -39,7 +39,7 @@ OUTPUT_DATA: recwithgen.root
 OUTPUT_TEMPLATE:{10}{9}_filtered_converted.root
 """.format(count,args.track,args.filter_exedir,args.hipo_dir+filename,
     args.proc_start,args.proc_end,args.polarity,extra_args,
-    filename,filename_base,args.return_dir,args.convert_dir,filename,converter_name)
+    filename,filename_base,args.return_dir,args.convert_dir,filename)
     outfile.write(string)
     outfile.close()
 

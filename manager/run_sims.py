@@ -153,7 +153,7 @@ except OSError as e:
                 polarity,
                 params.output_location+"/0_JSub_Factory/Filter_Convert/"+config+option,
                 params.output_location+"/3_Filtered_Converted_Root_Files/"+config+option,
-                params.output_location+"/2_GEMC_DSTs/"+config,
+                params.output_location+"/2_GEMC_DSTs/"+config+"/",
                 args.filter_exe_path,
                 converter_exe,
                 args.jsubmitter,
