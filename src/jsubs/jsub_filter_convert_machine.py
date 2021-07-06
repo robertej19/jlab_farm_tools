@@ -35,7 +35,7 @@ INPUT_FILES:
 
 SINGLE_JOB: true
 
-OUTPUT_DATA: recwithgen.root
+OUTPUT_DATA: genOnly.root
 OUTPUT_TEMPLATE:{10}{9}_filtered_converted.root
 """.format(count,args.track,args.filter_exedir,args.hipo_dir+filename,
     args.proc_start,args.proc_end,args.polarity,extra_args,
