@@ -11,6 +11,7 @@ if __name__ == "__main__":
     
 
     parser.add_argument("-d","--root_dir",help="directory containing root files",default="root_files/")
+    parser.add_argument("-o","--output_path",help="output file location and name",default="none")
     
     args = parser.parse_args()
 
@@ -34,8 +35,12 @@ if __name__ == "__main__":
         string_middle += """ch.Add("{}{}");
         """.format(args.root_dir,file_name)
 
-    string_end = """ch.Merge("merged_{}_files.root");
-    """.format(len(onlyfiles))
+    if args.output_path == "none":
+        string_end = """ch.Merge("merged_{}_files.root");
+        """.format(len(onlyfiles))
+    else:
+        string_end = """ch.Merge("{}");
+        """.format(args.output_path)
     
     string_end_bracket = r"""
 }"""
@@ -51,4 +56,4 @@ if __name__ == "__main__":
         print("Exiting\n")
         sys.exit()
     
-    print("Merging complete, merged root filename is: merged_{}_files.root".format(len(onlyfiles)))
+    print("Merging complete, merged is at {}".format(output_path))

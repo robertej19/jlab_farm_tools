@@ -67,7 +67,6 @@ def generate_aao_jsub_files(args,params,logging_file):
             "--jsub_textdir", params.jsub_generator_dir,
             "-n", str(args.n),
             "--return_dir", params.generator_return_dir,
-            "--multi_phase_space",
             "--pi0_gen_exe_path", str(args.pi0_gen_exe_path)])
         logging_file.write("\n\nCreated JSub files at: {}".format(params.jsub_generator_dir))
         return 0
@@ -84,6 +83,7 @@ def submit_generator_jsubs(args,params,logging_file):
         subprocess.run([executable,
             "--jobsdir", jsub_generator_dir])
         logging_file.write("\n\nSubmitted JSub files with return to: {}".format(params.generator_return_dir))
+        print("Successfully submitted jobs, base directory is {}".format(params.output_location))
         return 0
     except OSError as e:
         print("\nError creating generator input file")
@@ -110,13 +110,17 @@ def gemc_submission_details(args,params,logging_file):
 def generate_copy_script(args,params,logging_file):
     logging_file = open(params.output_location+"/copyscript.py", "a")
     logging_file.write("""#!/bin/python3.6m
-import subprocess""")
+import subprocess
+
+user = input("Enter username, e.g. robertej")
+""")
     
     for config in params.configs:
         logging_file.write("""
-gemc_return_location = input("Enter full path (e.g. /volatile/.../job_2814/output/) of GEMC output dir for configuration '{}': ")
+gemc_job_number = input("Enter GEMC job number (e.g. 3163) of GEMC output dir for configuration '{}': ")
+gemc_return_location = "/volatile/clas12/osg2/{{}}/{{}}/output/".format(user,gemc_job_number)
 try:
-    print("Copying files from GEMC output to local dir")
+    print("Copying files from GEMC output at {{}} to local dir".format(gemc_return_location))
     subprocess.run(['python3.6','{}',"-d",gemc_return_location,"-o",'{}'])
 except OSError as e:
     print("Error encountered, copying failed")
@@ -129,6 +133,7 @@ import subprocess""")
     
     for option in ["/Gen/","/Recon/"]:
         converter_exe = args.converter_recon_exe_path if option=="/Recon" else args.converter_gen_exe_path
+        convert_type = "recon" if option=="/Recon" else "gen"
         for index,config in enumerate(params.configs):
             polarity = params.polarities[index]
             logging_file.write("""
@@ -141,6 +146,7 @@ try:
                     "--hipo_dir",'{}',
                     "--filter_exedir",'{}',
                     "--convert_dir",'{}',
+                    "--convert_type",'{}',
                     "--twophotons"])
     try:
         subprocess.run(['{}',
@@ -156,8 +162,31 @@ except OSError as e:
                 params.output_location+"/2_GEMC_DSTs/"+config+"/",
                 args.filter_exe_path,
                 converter_exe,
+                convert_type,
                 args.jsubmitter,
                 params.output_location+"/0_JSub_Factory/Filter_Convert/"+config+option))
+
+def generate_merger_script(args,params,logging_file):
+    logging_file = open(params.output_location+"/root_merger_script.py", "a")
+    logging_file.write("""#!/bin/python3.6m
+import subprocess""")
+
+    for option in ["/Gen/","/Recon/"]:
+        convert_type = "recon" if option=="/Recon" else "gen"
+        for index,config in enumerate(params.configs):
+            output_name = "merged_{}_".format(config)
+            output_name +="recon.root" if option=="/Recon" else "gen.root"
+            logging_file.write("""
+try:
+    print("Running root merger for",config,option)
+    subprocess.run(['python3.6','{}',
+                    "-d",'{}',
+                    "-o",'{}'])
+except OSError as e:
+    print("Error encountered, fc jsub creation failed")
+    print("Error message was:",e.strerror)""".format(args.root_merger_path,
+                params.output_location+"/3_Filtered_Converted_Root_Files/"+config+option,
+                params.output_location+"/4_Final_Output_Files/"+config+"/"+output_name))
 
 
 #         logging_file.write("""
@@ -183,10 +212,13 @@ if __name__ == "__main__":
     else:
         full_file_path = os.path.abspath(__file__) #This sets the path for interpreted python
 
+    
+
+
     main_source_dir = "/".join(full_file_path.split("/")[:-3])
 
     now = datetime.now()
-    dt_string = now.strftime("%Y%m%d_%H%M_%s")
+    dt_string = now.strftime("%Y%m%d_%H%M")
     main_dir = "/simulations_"+dt_string
     subdirs = ["0_JSub_Factory","1_Generated_Events",
             "2_GEMC_DSTs","3_Filtered_Converted_Root_Files","4_Final_Output_Files"]
@@ -218,6 +250,8 @@ if __name__ == "__main__":
     location_of_fc_jsub_machine = main_source_dir + "/jlab_farm_tools/src/jsubs/jsub_filter_convert_machine.py"
         #filter exe path
     location_of_filter_exe = main_source_dir + "/filter/fiducial-filtering/filterEvents/"
+        #root combiner path
+    location_of_root_merger = main_source_dir + "/jlab_farm_tools/root_combiner.py"
 
     location_of_converter_gen_exe = main_source_dir +  "/convertingHipo/minimal/convertGen"
     location_of_converter_recon_exe = main_source_dir + "/convertingHipo/minimal/convertRec"
@@ -263,6 +297,9 @@ if __name__ == "__main__":
     parser.add_argument("--converter_gen_exe_path",help="Location for converter for gen executable path",default=location_of_converter_gen_exe)
                     #recon converter executable path
     parser.add_argument("--converter_recon_exe_path",help="Location for converter for recon executable path",default=location_of_converter_recon_exe)
+        #root merger path
+    parser.add_argument("--root_merger_path",help="Location for root merger script ",default=location_of_root_merger)
+    
     
 
             #This arguement can be ignored and should be deleted
@@ -456,7 +493,8 @@ if __name__ == "__main__":
             polarities)
     
     logging_file = open(output_location+"/readme.txt", "a")
-    logging_file.write("Simulation Start Date: {}".format(now))
+    logging_file.write("Simulation Start Date: {} \n".format(now))
+    logging_file.write("Invoked with args: %s\n" % (sys.argv))
     
 
 
@@ -482,6 +520,7 @@ if __name__ == "__main__":
     generate_fc_script(args,params,logging_file)
 
     # Generate emails and send out when various steps are complete
+    generate_merger_script(args,params,logging_file)
     #generate_root_merger_script(args,params,logging_file)
 
 

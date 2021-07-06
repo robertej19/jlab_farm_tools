@@ -8,7 +8,7 @@ import shutil
 
 def gen_jsub(args,extra_args,count,filename):
 
-    converter_name = "convertRec" if args.convert_type =="recon" else "convertGen"
+    output_name = "recwithgen.root" if args.convert_type =="recon" else "genOnly.root"
     filename_base = filename.split(".hipo")[0]
     print(filename_base)
     outfile = open(args.outdir+"jsub_filtering_job_{}.txt".format(count),"w")
@@ -35,11 +35,11 @@ INPUT_FILES:
 
 SINGLE_JOB: true
 
-OUTPUT_DATA: genOnly.root
+OUTPUT_DATA: {13}
 OUTPUT_TEMPLATE:{10}{9}_filtered_converted.root
 """.format(count,args.track,args.filter_exedir,args.hipo_dir+filename,
     args.proc_start,args.proc_end,args.polarity,extra_args,
-    filename,filename_base,args.return_dir,args.convert_dir,filename)
+    filename,filename_base,args.return_dir,args.convert_dir,filename,output_name)
     outfile.write(string)
     outfile.close()
 
