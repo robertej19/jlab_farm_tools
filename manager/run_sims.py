@@ -101,6 +101,24 @@ def gemc_submission_details(args,params,logging_file):
         logging_file.write("LUND Location: {} \n".format(params.generator_return_dir))
         logging_file.write("Background Merging: No \n")
 
+def generate_copy_script(args,params,logging_file):
+    logging_file = open(params.output_location+"/copyscript.py", "a")
+    logging_file.write("""#!/bin/python3.6m
+import subprocess""")
+    
+    for config in params.configs:
+        print(config)
+        logging_file.write("""
+gemc_return_location = input("Enter full path (e.g. /volatile/.../job_2814/output/) of GEMC output dir for configuration '{}': ")
+try:
+    print("Copying files from GEMC output to local dir")
+    subprocess.run(['{}',"-d",gemc_return_location,"-o",'{}'])
+except OSError as e:
+    print("Error encountered, copying failed")
+    print("Error message was:",e.strerror)""".format(config,args.dst_copier_path,config))
+    
+
+
 if __name__ == "__main__":
     # The following is needed since an executable does not have __file__ defined, but when working in interpreted mode,
     # __file__ is needed to specify the relative file path of other packages. In principle strict relative 
@@ -141,7 +159,8 @@ if __name__ == "__main__":
     location_of_event_filter_aao_norad = main_source_dir+"/aao_gen/gen_wrapper/batch_farm_executables/src/norad/lund_filter_norad.py"
         # filter path for aao_rad
     location_of_event_filter_aao_rad = main_source_dir+"/aao_gen/gen_wrapper/batch_farm_executables/src/rad/lund_filter_rad.py"
-
+        # dst copier path
+    location_of_dst_copier = main_source_dir+"/jlab_farm_tools/other-tools/dst_copier_from_gemc_output.py"
 
 
     parser = argparse.ArgumentParser(description="""Need to write the description \n
@@ -175,6 +194,9 @@ if __name__ == "__main__":
     parser.add_argument("--filter_exe_path_norad",help="Path to lund filter executable",default=location_of_event_filter_aao_norad)
             # filter path for aao_rad
     parser.add_argument("--filter_exe_path_rad",help="Path to lund filter executable",default=location_of_event_filter_aao_rad)
+            # dst copier path
+    parser.add_argument("--dst_copier_path",help="Path to dst copier",default=location_of_dst_copier)
+    
 
             #This arguement can be ignored and should be deleted
     parser.add_argument("--outdir",help="Location of intermediate return files between generation and filtering, can be ignored for batch farm",default="output/")
@@ -243,6 +265,7 @@ if __name__ == "__main__":
     parser.add_argument("--track",help="jsub track, e.g. debug, analysis",default="analysis")
     parser.add_argument("-n",type=int,help="Number of batch submission text files",default=1)
     parser.add_argument("--multi_phase_space",help="split xbmin-xmax q2min-q2max over smaller phase spaces",default=False,action='store_true')
+    parser.add_argument("-s","--submit",help="submit generator jsubs to batch farm",default=False,action='store_true')
 
 
     #Options for generator and generated event filtering
@@ -319,6 +342,12 @@ if __name__ == "__main__":
     #    print("Creating directory structure for {} configuration run".format(config))
     for directory in subdirs:
         subprocess.call(['mkdir','-p',args.base_dir+main_dir+"/"+directory])
+    for config in configs:
+        subprocess.call(['mkdir','-p',args.base_dir+main_dir+"/2_GEMC_DSTs/"+config])
+        subprocess.call(['mkdir','-p',args.base_dir+main_dir+"/3_Filtered_Converted_Root_Files/"+config+"/Gen"])
+        subprocess.call(['mkdir','-p',args.base_dir+main_dir+"/3_Filtered_Converted_Root_Files/"+config+"/Recon"])
+        subprocess.call(['mkdir','-p',args.base_dir+main_dir+"/4_Final_Output_Files/"+config])
+
 
     jsub_generator_dir = args.base_dir+main_dir+ "/0_JSub_Factory/Generation/"
     jsub_filter_convert_dir = args.base_dir+main_dir+ "/0_JSub_Factory/Filtering_Converting/"    
@@ -327,7 +356,7 @@ if __name__ == "__main__":
     final_dir = args.base_dir+main_dir+ "/4_Final_Output_Files"
 
     class parameters:
-        def __init__(self,jgd,jfcd,grd,fcrd,fd,configs,mag_field_configs):
+        def __init__(self,jgd,jfcd,grd,fcrd,fd,configs,mag_field_configs,output_location):
             self.jsub_generator_dir=jgd
             self.jsub_filter_convert_dir=jfcd
             self.generator_return_dir=grd
@@ -335,42 +364,47 @@ if __name__ == "__main__":
             self.final_dir=fd
             self.mag_field_configs = mag_field_configs
             self.configs = configs
+            self.output_location = output_location
 
     
-    
+    output_location = args.base_dir+main_dir
+
     params = parameters(jsub_generator_dir,
             jsub_filter_convert_dir,
             generator_return_dir,
             filt_conv_return_dir,
             final_dir,configs,
-            mag_field_configs)
+            mag_field_configs,
+            output_location)
     
-
-    readme_location = args.base_dir+main_dir+"/readme.txt"
-    logging_file = open(readme_location, "a")
+    logging_file = open(output_location+"/readme.txt", "a")
     logging_file.write("Simulation Start Date: {}".format(now))
     
+
 
     #########
     # NEED TO INCLUDE SPLITTING MECHANISM OVER PHASE SPACE
     # Generate Lund files
         # Create jsub files for lunds
-    generate_aao_jsub_files(args,params,logging_file)
+    #generate_aao_jsub_files(args,params,logging_file)
         # Submit the jsub files
-    submit_generator_jsubs(args,params,logging_file)
-    gemc_submission_details(args,params,logging_file)
+    if args.submit:
+        submit_generator_jsubs(args,params,logging_file)
 
     # Submit jobs to GEMC through webportal
-        # Give instructions
+    #gemc_submission_details(args,params,logging_file)
+
 
     # Copy DST files to local directories
         # Generate a sh script to run to copy, and give running insructions
+    generate_copy_script(args,params,logging_file)
 
     # Filter and convert files
         # Generate a sh script to generate and submit jsubs, and give running insructions
+    #generate_fc_script(args,params,logging_file)
 
     # Generate emails and send out when various steps are complete
-    
+    #generate_root_merger_script(args,params,logging_file)
 
 
     logging_file.close()
