@@ -102,7 +102,7 @@ def gemc_submission_details(args,params,logging_file):
         logging_file.write("Background Merging: No \n")
 
     logging_file.write("\n\n When GEMC is complete, run the following: \n")
-    logging_file.write("python {}".format(params.output_location+"/copyscript.py"))
+    logging_file.write("python3.6 {}".format(params.output_location+"/copyscript.py"))
 
 def generate_copy_script(args,params,logging_file):
     logging_file = open(params.output_location+"/copyscript.py", "a")
@@ -117,7 +117,7 @@ try:
     subprocess.run(['python3.6','{}',"-d",gemc_return_location,"-o",'{}'])
 except OSError as e:
     print("Error encountered, copying failed")
-    print("Error message was:",e.strerror)""".format(config,args.dst_copier_path,params.output_location+"/2_GEMC_DSTs/"+config))
+    print("Error message was:",e.strerror)""".format(config,args.dst_copier_path,params.output_location+"/2_GEMC_DSTs/"+config+"/"))
     
 
     
