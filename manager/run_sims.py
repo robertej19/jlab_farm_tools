@@ -263,7 +263,7 @@ if __name__ == "__main__":
                 # gen converter executable path
     parser.add_argument("--converter_gen_exe_path",help="Location for converter for gen executable path",default=location_of_converter_gen_exe)
                     #recon converter executable path
-    parser.add_argument("--converter_recon_exe_path",help="Location for converter for recon executable path",default=location_of_converger_recon_exe)
+    parser.add_argument("--converter_recon_exe_path",help="Location for converter for recon executable path",default=location_of_converter_recon_exe)
     
 
             #This arguement can be ignored and should be deleted
