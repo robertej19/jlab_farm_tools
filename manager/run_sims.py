@@ -114,7 +114,7 @@ import subprocess""")
 gemc_return_location = input("Enter full path (e.g. /volatile/.../job_2814/output/) of GEMC output dir for configuration '{}': ")
 try:
     print("Copying files from GEMC output to local dir")
-    subprocess.run(['{}',"-d",gemc_return_location,"-o",'{}'])
+    subprocess.run(['python3.6','{}',"-d",gemc_return_location,"-o",'{}'])
 except OSError as e:
     print("Error encountered, copying failed")
     print("Error message was:",e.strerror)""".format(config,args.dst_copier_path,params.output_location+"/2_GEMC_DSTs/"+config))
