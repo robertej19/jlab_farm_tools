@@ -150,7 +150,7 @@ try:
         print("Error encountered, could not submit fc jsub jobs")
 except OSError as e:
     print("Error encountered, fc jsub creation failed")
-    print("Error message was:",e.strerror)""".format(filt_conv_jsub_path,
+    print("Error message was:",e.strerror)""".format(args.filt_conv_jsub_path,
                 polarity,
                 params.output_location+"/0_JSub_Factory/Filter_Convert/"+config+option,
                 params.output_location+"/3_Filtered_Converted_Root_Files/"+config+option,
