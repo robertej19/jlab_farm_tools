@@ -140,7 +140,7 @@ try:
                     "--return_dir",'{}',
                     "--hipo_dir",'{}',
                     "--filter_exedir",'{}',
-                    "--conver_dir",'{}',
+                    "--convert_dir",'{}',
                     "--twophotons"])
     try:
         subprocess.run(['{}',
