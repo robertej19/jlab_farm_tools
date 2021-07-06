@@ -127,7 +127,7 @@ def generate_fc_script(args,params,logging_file):
     logging_file.write("""#!/bin/python3.6m
 import subprocess""")
     
-    for option in ["/Gen","/Recon"]:
+    for option in ["/Gen/","/Recon/"]:
         converter_exe = args.converter_recon_exe_path if option=="/Recon" else args.converter_gen_exe_path
         for index,config in enumerate(params.configs):
             polarity = params.polarities[index]
@@ -139,13 +139,12 @@ try:
                     "--outdir",'{}',
                     "--return_dir",'{}',
                     "--hipo_dir",'{}',
-                    "--filter_exedir",'{}'
+                    "--filter_exedir",'{}',
                     "--conver_dir",'{}',
                     "--twophotons"])
     try:
         subprocess.run(['{}',
             "--jobsdir", '{}'])
-        return 0
     except OSError as e:
         print("Error encountered, could not submit fc jsub jobs")
 except OSError as e:
@@ -465,7 +464,7 @@ if __name__ == "__main__":
     # NEED TO INCLUDE SPLITTING MECHANISM OVER PHASE SPACE
     # Generate Lund files
         # Create jsub files for lunds
-    #generate_aao_jsub_files(args,params,logging_file)
+    generate_aao_jsub_files(args,params,logging_file)
         # Submit the jsub files
     if args.submit:
         submit_generator_jsubs(args,params,logging_file)
