@@ -220,8 +220,8 @@ if __name__ == "__main__":
         #filter exe path
     location_of_filter_exe = main_source_dir + "/filter/fiducial-filtering/filterEvents/bin/filterEvents"
 
-    location_of_converger_gen_exe = main_source_dir +  "/convertingHipo/minimal/convertGen"
-    location_of_converger_recon_exe = main_source_dir + "/convertingHipo/minimal/convertRec"
+    location_of_converter_gen_exe = main_source_dir +  "/convertingHipo/minimal/convertGen"
+    location_of_converter_recon_exe = main_source_dir + "/convertingHipo/minimal/convertRec"
 
     parser = argparse.ArgumentParser(description="""Need to write the description \n
                     This script: \n
