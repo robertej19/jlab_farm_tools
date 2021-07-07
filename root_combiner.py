@@ -56,4 +56,4 @@ if __name__ == "__main__":
         print("Exiting\n")
         sys.exit()
     
-    print("Merging complete, merged is at {}".format(output_path))
+    print("Merging complete, merged is at {}".format(args.output_path))

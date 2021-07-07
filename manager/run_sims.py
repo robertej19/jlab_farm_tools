@@ -182,13 +182,13 @@ import subprocess""")
             output_name +="recon.root" if option=="/Recon" else "gen.root"
             logging_file.write("""
 try:
-    print("Running root merger for",{},{})
+    print("Running root merger for",'{}','{}')
     subprocess.run(['python3.6','{}',
                     "-d",'{}',
                     "-o",'{}'])
 except OSError as e:
     print("Error encountered, fc jsub creation failed")
-    print("Error message was:",e.strerror)""".format(config,option,
+    print("Error message was:",e.strerror)""".format(config,convert_type,
                 args.root_merger_path,
                 params.output_location+"/3_Filtered_Converted_Root_Files/"+config+option,
                 params.output_location+"/4_Final_Output_Files/"+config+"/"+output_name))
