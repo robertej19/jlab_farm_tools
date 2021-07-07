@@ -107,6 +107,10 @@ def gemc_submission_details(args,params,logging_file):
     logging_file.write("\n\n When copying files from GEMC is complete, run the following: \n")
     logging_file.write("python3.6 {}".format(params.output_location+"/filter_convert_jsub.py"))
 
+    logging_file.write("\n\n When filtering + converting is complete, run the following: \n")
+    logging_file.write("python3.6 {}".format(params.output_location+"/root_merger_script.py"))
+
+
 def generate_copy_script(args,params,logging_file):
     logging_file = open(params.output_location+"/copyscript.py", "a")
     logging_file.write("""#!/bin/python3.6m
@@ -178,13 +182,14 @@ import subprocess""")
             output_name +="recon.root" if option=="/Recon" else "gen.root"
             logging_file.write("""
 try:
-    print("Running root merger for",config,option)
+    print("Running root merger for",{},{})
     subprocess.run(['python3.6','{}',
                     "-d",'{}',
                     "-o",'{}'])
 except OSError as e:
     print("Error encountered, fc jsub creation failed")
-    print("Error message was:",e.strerror)""".format(args.root_merger_path,
+    print("Error message was:",e.strerror)""".format(config,option,
+                args.root_merger_path,
                 params.output_location+"/3_Filtered_Converted_Root_Files/"+config+option,
                 params.output_location+"/4_Final_Output_Files/"+config+"/"+output_name))
 
