@@ -176,10 +176,10 @@ def generate_merger_script(args,params,logging_file):
 import subprocess""")
 
     for option in ["/Gen/","/Recon/"]:
-        convert_type = "recon" if option=="/Recon" else "gen"
+        convert_type = "recon" if option=="/Recon/" else "gen"
         for index,config in enumerate(params.configs):
             output_name = "merged_{}_".format(config)
-            output_name +="recon.root" if option=="/Recon" else "gen.root"
+            output_name +="recon.root" if option=="/Recon/" else "gen.root"
             logging_file.write("""
 try:
     print("Running root merger for",'{}','{}')
