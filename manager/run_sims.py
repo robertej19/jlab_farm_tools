@@ -112,13 +112,13 @@ def generate_copy_script(args,params,logging_file):
     logging_file.write("""#!/bin/python3.6m
 import subprocess
 
-user = input("Enter username, e.g. robertej")
+user = input("Enter username, e.g. robertej": )
 """)
     
     for config in params.configs:
         logging_file.write("""
 gemc_job_number = input("Enter GEMC job number (e.g. 3163) of GEMC output dir for configuration '{}': ")
-gemc_return_location = "/volatile/clas12/osg2/{{}}/{{}}/output/".format(user,gemc_job_number)
+gemc_return_location = "/volatile/clas12/osg2/{{}}/job_{{}}/output/".format(user,gemc_job_number)
 try:
     print("Copying files from GEMC output at {{}} to local dir".format(gemc_return_location))
     subprocess.run(['python3.6','{}',"-d",gemc_return_location,"-o",'{}'])
