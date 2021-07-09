@@ -116,7 +116,7 @@ def generate_copy_script(args,params,logging_file):
     logging_file.write("""#!/bin/python3.6m
 import subprocess
 
-user = input("Enter username, e.g. robertej": )
+user = input("Enter username, e.g. robertej: " )
 """)
     
     for config in params.configs:
