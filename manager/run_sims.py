@@ -127,7 +127,7 @@ try:
     print("Copying files from GEMC output at {{}} to local dir".format(gemc_return_location))
     subprocess.run(['python3.6','{}',"-d",gemc_return_location,"-o",'{}'])
     logging_file = open('{}',"a")
-    logging_file.write("GEMC Directory for configuration {{}} is {{}}".format({},gemc_return_location))
+    logging_file.write("GEMC Directory for configuration {{}} is {{}}".format('{}',gemc_return_location))
 except OSError as e:
     print("Error encountered, copying failed")
     print("Error message was:",e.strerror)""".format(config,
