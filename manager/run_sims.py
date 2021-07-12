@@ -112,35 +112,42 @@ def gemc_submission_details(args,params,logging_file):
 
 
 def generate_copy_script(args,params,logging_file):
-    logging_file = open(params.output_location+"/copyscript.py", "a")
-    logging_file.write("""#!/bin/python3.6m
+    copyscript_file = open(params.output_location+"/copyscript.py", "a")
+    copyscript_file.write("""#!/bin/python3.6m
 import subprocess
 
 user = input("Enter username, e.g. robertej: " )
 """)
     
     for config in params.configs:
-        logging_file.write("""
+        copyscript_file.write("""
 gemc_job_number = input("Enter GEMC job number (e.g. 3163) of GEMC output dir for configuration '{}': ")
 gemc_return_location = "/volatile/clas12/osg2/{{}}/job_{{}}/output/".format(user,gemc_job_number)
 try:
     print("Copying files from GEMC output at {{}} to local dir".format(gemc_return_location))
     subprocess.run(['python3.6','{}',"-d",gemc_return_location,"-o",'{}'])
+    logging_file = open('{}',"a")
+    logging_file.write("GEMC Directory for configuration {{}} is {{}}".format({},gemc_return_location))
 except OSError as e:
     print("Error encountered, copying failed")
-    print("Error message was:",e.strerror)""".format(config,args.dst_copier_path,params.output_location+"/2_GEMC_DSTs/"+config+"/"))
+    print("Error message was:",e.strerror)""".format(config,
+                    args.dst_copier_path,
+                    params.output_location+"/2_GEMC_DSTs/"+config+"/",
+                    logging_file,config))
     
 def generate_fc_script(args,params,logging_file):
-    logging_file = open(params.output_location+"/filter_convert_jsub.py", "a")
-    logging_file.write("""#!/bin/python3.6m
+    filt_conv_file = open(params.output_location+"/filter_convert_jsub.py", "a")
+    filt_conv_file.write("""#!/bin/python3.6m
 import subprocess""")
     
     for option in ["/Gen/","/Recon/"]:
-        converter_exe = args.converter_recon_exe_path if option=="/Recon" else args.converter_gen_exe_path
-        convert_type = "recon" if option=="/Recon" else "gen"
+        converter_exe = args.converter_recon_exe_path if option=="/Recon/" else args.converter_gen_exe_path
+        convert_type = "recon" if option=="/Recon/" else "gen"
+        print(converter_exe)
+        print(convert_type)
         for index,config in enumerate(params.configs):
             polarity = params.polarities[index]
-            logging_file.write("""
+            filt_conv_file.write("""
 try:
     print("Creating jsub text tiles")
     subprocess.run(['python3.6','{}',
@@ -171,8 +178,8 @@ except OSError as e:
                 params.output_location+"/0_JSub_Factory/Filter_Convert/"+config+option))
 
 def generate_merger_script(args,params,logging_file):
-    logging_file = open(params.output_location+"/root_merger_script.py", "a")
-    logging_file.write("""#!/bin/python3.6m
+    merger_file = open(params.output_location+"/root_merger_script.py", "a")
+    merger_file.write("""#!/bin/python3.6m
 import subprocess""")
 
     for option in ["/Gen/","/Recon/"]:
@@ -180,7 +187,7 @@ import subprocess""")
         for index,config in enumerate(params.configs):
             output_name = "merged_{}_".format(config)
             output_name +="recon.root" if option=="/Recon/" else "gen.root"
-            logging_file.write("""
+            merger_file.write("""
 try:
     print("Running root merger for",'{}','{}')
     subprocess.run(['python3.6','{}',
