@@ -133,7 +133,7 @@ except OSError as e:
     print("Error message was:",e.strerror)""".format(config,
                     args.dst_copier_path,
                     params.output_location+"/2_GEMC_DSTs/"+config+"/",
-                    logging_file,config))
+                    params.logging_file_name,config))
     
 def generate_fc_script(args,params,logging_file):
     filt_conv_file = open(params.output_location+"/filter_convert_jsub.py", "a")
@@ -481,7 +481,8 @@ if __name__ == "__main__":
     final_dir = output_location+ "/4_Final_Output_Files"
 
     class parameters:
-        def __init__(self,jgd,jfcd,grd,fcrd,fd,configs,mag_field_configs,output_location,polarities):
+        def __init__(self,jgd,jfcd,grd,fcrd,fd,configs,mag_field_configs,
+                    output_location,polarities,logging_file_name):
             self.jsub_generator_dir=jgd
             self.jsub_filter_convert_dir=jfcd
             self.generator_return_dir=grd
@@ -491,8 +492,10 @@ if __name__ == "__main__":
             self.configs = configs
             self.output_location = output_location
             self.polarities = polarities
+            self.logging_file_name = logging_file_name
 
 
+    logging_file_name = output_location+"/readme.txt"
     
 
     params = parameters(jsub_generator_dir,
@@ -502,9 +505,10 @@ if __name__ == "__main__":
             final_dir,configs,
             mag_field_configs,
             output_location,
-            polarities)
+            polarities,
+            logging_file_name)
     
-    logging_file = open(output_location+"/readme.txt", "a")
+    logging_file = open(params.logging_file_name, "a")
     logging_file.write("Simulation Start Date: {} \n".format(now))
     logging_file.write("Invoked with args: %s\n" % (sys.argv))
     
