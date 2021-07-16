@@ -1,1 +1,0 @@
-./src/jsubs/jsub_filter_convert_machine.py --filter_exedir /work/clas12/robertej/tools/fiducial-filtering/filterEvents/ --convert_dir /work/clas12/robertej/tools/convert-hipo-to-root/convertingHipo/all/ --twophotons --hipo_dir /volatile/clas12/robertej/10kjob_dsts_20210326/
