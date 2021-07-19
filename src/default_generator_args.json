@@ -1,0 +1,33 @@
+{
+    "aao_norad": [{
+        "physics_model":"5",
+        "flag_ehel":1,
+        "npart_norad":3,
+        "ebeam":10.6,
+        "q2min":0.9,
+        "q2max":14,
+        "epmin":0.2,
+        "epmax":10.6,
+        "fmcall":1.0,
+        "boso":1,
+        "seed":0,
+        "epirea":1,
+        "trig":1000
+    }],
+
+    "aao_rad": [{
+        "physics_model":"5",
+        "int_region":".20 .12 .20 .20",
+        "npart_rad":4,
+        "err_max":0.2,
+        "target_len":5,
+        "target_radius":0.43,
+        "cord_x":0.0,
+        "cord_y":0.0,
+        "cord_z":0.0,
+        "rad_emin":0.005,
+        "sigr_max_mult":0.0,
+        "sigr_max":0.005,
+        "model_5_min_W":1.9
+    }]
+}
