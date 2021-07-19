@@ -271,7 +271,7 @@ if __name__ == "__main__":
         # input file maker: aao_norad and rad
     location_of_input_file_maker = main_source_dir+"/aao_gen/gen_wrapper/batch_farm_executables/src/aao_input_file_maker.py"
         # filter path for aao_rad and norad
-    location_of_lund_event_filter = main_source_dir+"/aao_gen/gen_wrapper/batch_farm_executables/src/rad/lund_filter.py"
+    location_of_lund_event_filter = main_source_dir+"/aao_gen/gen_wrapper/batch_farm_executables/src/lund_filter.py"
 
 
         # dst copier path
