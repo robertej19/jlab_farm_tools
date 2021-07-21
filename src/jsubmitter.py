@@ -53,7 +53,7 @@ def sub_jobs(args):
             hertz = (ind+1)/(datetime.now()-start).total_seconds()
             seconds_left = (args.n-ind)/hertz
             ETF = datetime.now() + timedelta(seconds=seconds_left)
-            print("EFT: {}".format(ETF))
+            print("EFT: {}".format(ETF.strftime("%d-%H.%M.%S")))
         except OSError as e:
             print("Submission failed, error is:")
             print(e)
