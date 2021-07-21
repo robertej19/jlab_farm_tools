@@ -38,6 +38,43 @@ genName --trig 10 --docker --seed 1448577483
 This should produce a file genName.dat.
 """
 
+def gen_input_file(args,params,logging_file):
+    try:
+        subprocess.run([args.generator_input_exe_path,
+                "--generator_type", str(args.generator_type),
+                "--physics_model_rad", str(args.physics_model_rad),
+                "--physics_model_norad",str(args.physics_model_norad),
+                "--npart_norad", str(args.npart_norad),
+                "--npart_rad", str(args.npart_rad),
+                "--flag_ehel", str(args.flag_ehel),
+                "--int_region", str(args.int_region),
+                "--epirea", str(args.epirea), 
+                "--err_max", str(args.err_max),
+                "--target_len", str(args.target_len),
+                "--target_rad", str(args.target_rad),
+                "--cord_x", str(args.cord_x),
+                "--cord_y", str(args.cord_y),
+                "--cord_z", str(args.cord_z),
+                "--ebeam", str(args.ebeam),
+                "--q2min", str(args.q2min),
+                "--q2max", str(args.q2max),
+                "--epmin", str(args.epmin),
+                "--epmax", str(args.epmax),
+                "--rad_emin", str(args.rad_emin),
+                "--trig", str(args.trig),
+                "--sigr_max_mult", str(args.sigr_max_mult),
+                "--sigr_max", str(args.sigr_max),
+                "--seed", str(args.seed),
+                "--fmcall", str(args.fmcall),
+                "--boso", str(args.boso),
+                "--input_filename_rad", str(params.output_location+"/"+args.input_filename_rad),
+                "--input_filename_norad", str(params.output_location+"/"+args.input_filename_norad)])
+        return 0
+    except OSError as e:
+        print("\nError creating generator input file")
+        print("The error message was:\n %s - %s." % (e.filename, e.strerror))
+        print("Exiting\n")
+        return -1
 
 def generate_aao_jsub_files(args,params,logging_file):
     executable = args.source_aao_jsub_generator
@@ -608,8 +645,10 @@ if __name__ == "__main__":
     for arg in vars(args):
             writestring = str(arg)+ " : " +str(getattr(args, arg)) + "\n \n"
             full_args_log.write(writestring)
-    sys.exit()
 
+    gen_input_file(args,params,logging_file)
+
+    sys.exit()
     #########
     # NEED TO INCLUDE SPLITTING MECHANISM OVER PHASE SPACE
     # Generate Lund files
