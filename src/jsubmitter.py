@@ -25,7 +25,8 @@ def sub_jobs(args):
     for ind in range(0,args.n):
         file = jobs_list[ind]
         filesub = args.jobsdir + file
-        print("Trying to submit job {}".format(filesub))
+        print("\n On file {} of {}".format(ind,args.n))
+        print("Trying to submit job {}".format(file))
         
         try:
             process = subprocess.Popen(['jsub', filesub],
