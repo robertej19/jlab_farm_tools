@@ -128,7 +128,7 @@ executable = '{}'
         print("Process failed with error code, Exiting: ",e)
         return -1""".format(args.jsubmitter,
                             params.jsub_generator_dir,
-                            params.logging_file_name))
+                            params.readme_file_name))
 
 
 
@@ -174,7 +174,7 @@ except OSError as e:
     print("Error message was:",e.strerror)""".format(config,
                     args.dst_copier_path,
                     params.output_location+"/2_GEMC_DSTs/"+config+"/",
-                    params.logging_file_name,config))
+                    params.readme_file_name,config))
     
 def generate_fc_script(args,params,logging_file):
     filt_conv_file = open(params.output_location+"/filter_convert_jsub.py", "a")
@@ -556,7 +556,7 @@ if __name__ == "__main__":
 
     class parameters:
         def __init__(self,jgd,jfcd,grd,fcrd,fd,configs,mag_field_configs,
-                    output_location,polarities,logging_file_name):
+                    output_location,polarities,readme_file_name):
             self.jsub_generator_dir=jgd
             self.jsub_filter_convert_dir=jfcd
             self.generator_return_dir=grd
@@ -566,10 +566,11 @@ if __name__ == "__main__":
             self.configs = configs
             self.output_location = output_location
             self.polarities = polarities
-            self.logging_file_name = logging_file_name
+            self.readme_file_name = readme_file_name
 
 
-    logging_file_name = output_location+"/readme.txt"
+    readme_file_name = output_location+"/readme.txt"
+    full_args_logging_file = output_location+"/full_args_log.txt"
     
 
     params = parameters(jsub_generator_dir,
@@ -580,15 +581,24 @@ if __name__ == "__main__":
             mag_field_configs,
             output_location,
             polarities,
-            logging_file_name)
+            readme_file_name)
     
-    logging_file = open(params.logging_file_name, "a")
+    runstring = "python3.6 "
+    for item in sys.argv:
+        runstring += item+" "
+
+    logging_file = open(params.readme_file_name, "a")
     logging_file.write("Simulation Start Date: {} \n".format(now))
-    logging_file.write("Invoked with args: %s\n" % (sys.argv))
+    logging_file.write("Command used to produce this running: \n {} \n \n".format(runstring))
     logging_file.write("If generation jsub submission fails, restart with the following command: \n")
     logging_file.write("python3.6"+params.output_location+"/backup_submit_generator_jsubs.py")
     
-
+    full_args_log = open(full_args_logging_file,"a")
+    full_args_log.write("Below find the full set of arguements used in this run: \n \n")
+    for arg in vars(args):
+        writestring = str(arg)+ " : " +str(getattr(args, arg)) + "\n \n"
+        full_args_log.write(writestring)
+    sys.exit()
 
     #########
     # NEED TO INCLUDE SPLITTING MECHANISM OVER PHASE SPACE
