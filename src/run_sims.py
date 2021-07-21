@@ -155,15 +155,13 @@ def generate_backup_generator_jsub_script(args,params,logging_file):
 import subprocess
 
 executable = '{}'
-    try:
+try:
         subprocess.run([executable,
             "--jobsdir", '{}'])
         logging_file = open('{}',"a")
-        logging_file.write("\n Ran backup jsub submission for generator")
-        return 0
-    except OSError as e:
-        print("Process failed with error code, Exiting: ",e)
-        return -1""".format(args.jsubmitter,
+        logging_file.write("Ran backup jsub submission for generator")
+except OSError as e:
+        print("Process failed with error code, Exiting: ",e)""".format(args.jsubmitter,
                             params.jsub_generator_dir,
                             params.readme_file_name))
 
