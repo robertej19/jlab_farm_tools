@@ -9,19 +9,32 @@ import shutil
 import subprocess
 import os
 import time
+from datetime import datetime
+from datetime import timedelta
+start=datetime.now()
+time.sleep(1)
 
 
 def sub_jobs(args):
+
     if not os.path.isdir(args.jobsdir):
         print("{} directory not found, exiting".format(args.jobsdir))
         sys.exit()
-    jobs_list = sorted(os.listdir(args.jobsdir))
+    jobs_list = []
+    for f in os.listdir(args.jobsdir):
+        f = args.jobsdir + f
+        if os.path.isfile(f):
+            jobs_list.append(f)
+    jobs_list = sorted(jobs_list)
     print("Found {} files in jobs directory".format(len(jobs_list)))
-
 
     if args.n < 1:
         args.n = len(jobs_list) 
 
+    if not os.path.exists(args.jobsdir+"submitted/"):
+        os.makedirs(args.jobsdir+"submitted/")
+
+    
     for ind in range(0,args.n):
         file = jobs_list[ind]
         filesub = args.jobsdir + file
@@ -33,6 +46,13 @@ def sub_jobs(args):
                     stdout=subprocess.PIPE, 
                     stderr=subprocess.PIPE)
             stdout, stderr = process.communicate()
+            os.rename(filesub, args.jobsdir +"submitted/"+ file)
+
+            print("Current time: {}".format(datetime.now().strftime("%d-%H.%M.%S")))
+            hertz = ind/(datetime.now()-start).total_seconds()
+            seconds_left = (args.n-ind)/hertz
+            ETF = datetime.now() + timedelta(seconds=seconds_left)
+            print("EFT: {}".format(ETF))
         except OSError as e:
             print("Submission failed, error is:")
             print(e)
