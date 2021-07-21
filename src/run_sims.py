@@ -431,6 +431,7 @@ if __name__ == "__main__":
     parser.add_argument("--track",help="jsub track, e.g. debug, analysis",default="analysis")
     parser.add_argument("-n",type=int,help="Number of batch submission text files",default=1)
     parser.add_argument("-s","--submit",help="submit generator jsubs to batch farm",default=False,action='store_true')
+    parser.add_argument("-m","--message",help="enter message about run",default="No unique message specified")
 
 
     #Options for generator and generated event filtering
@@ -584,20 +585,29 @@ if __name__ == "__main__":
             readme_file_name)
     
     runstring = "python3.6 "
-    for item in sys.argv:
-        runstring += item+" "
+    include = 1
+    for ind,item in enumerate(sys.argv):
+        print(item)
+        #Clunky bit of logic to exclude message and message contents
+        if item == "-m" or item == "--message":
+            include = -1
+        if include > 0:
+            runstring += item+" "
+        include +=1
+        print(include)
 
     logging_file = open(params.readme_file_name, "a")
     logging_file.write("Simulation Start Date: {} \n".format(now))
-    logging_file.write("Command used to produce this running: \n {} \n \n".format(runstring))
+    logging_file.write("Command used to produce this running (-m not included): \n {} \n \n".format(runstring))
+    logging_file.write("Running batch message: {} \n\n".format(args.message))
     logging_file.write("If generation jsub submission fails, restart with the following command: \n")
     logging_file.write("python3.6"+params.output_location+"/backup_submit_generator_jsubs.py")
     
     full_args_log = open(full_args_logging_file,"a")
     full_args_log.write("Below find the full set of arguements used in this run: \n \n")
     for arg in vars(args):
-        writestring = str(arg)+ " : " +str(getattr(args, arg)) + "\n \n"
-        full_args_log.write(writestring)
+            writestring = str(arg)+ " : " +str(getattr(args, arg)) + "\n \n"
+            full_args_log.write(writestring)
     sys.exit()
 
     #########

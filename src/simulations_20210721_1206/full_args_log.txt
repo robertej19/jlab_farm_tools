@@ -1,0 +1,124 @@
+Below find the full set of arguements used in this run: 
+ 
+base_dir : /mnt/c/Users/rober/Dropbox/Bobby/Linux/work/CLAS12/mit-clas12-analysis/theana/paragon/jlab_farm_tools/src
+ 
+source_aao_jsub_generator : /mnt/c/Users/rober/Dropbox/Bobby/Linux/work/CLAS12/mit-clas12-analysis/theana/paragon/aao_gen/gen_wrapper/batch_farm_executables/src/jsub_aao_generator.py
+ 
+jsubmitter : /mnt/c/Users/rober/Dropbox/Bobby/Linux/work/CLAS12/mit-clas12-analysis/theana/paragon/jlab_farm_tools/src/jsubmitter.py
+ 
+pi0_gen_exe_path : /mnt/c/Users/rober/Dropbox/Bobby/Linux/work/CLAS12/mit-clas12-analysis/theana/paragon/aao_gen/gen_wrapper/batch_farm_executables/src/aao_gen.py
+ 
+aao_norad_exe_location : /mnt/c/Users/rober/Dropbox/Bobby/Linux/work/CLAS12/mit-clas12-analysis/theana/paragon/aao_gen/aao_norad/build/aao_norad.exe
+ 
+aao_rad_exe_location : /mnt/c/Users/rober/Dropbox/Bobby/Linux/work/CLAS12/mit-clas12-analysis/theana/paragon/aao_gen/aao_rad/build/aao_rad.exe
+ 
+generator_input_exe_path : /mnt/c/Users/rober/Dropbox/Bobby/Linux/work/CLAS12/mit-clas12-analysis/theana/paragon/aao_gen/gen_wrapper/batch_farm_executables/src/aao_input_file_maker.py
+ 
+lund_filter_exe_path : /mnt/c/Users/rober/Dropbox/Bobby/Linux/work/CLAS12/mit-clas12-analysis/theana/paragon/aao_gen/gen_wrapper/batch_farm_executables/src/lund_filter.py
+ 
+dst_copier_path : /mnt/c/Users/rober/Dropbox/Bobby/Linux/work/CLAS12/mit-clas12-analysis/theana/paragon/jlab_farm_tools/src/dst_copier_from_gemc_output.py
+ 
+filt_conv_jsub_path : /mnt/c/Users/rober/Dropbox/Bobby/Linux/work/CLAS12/mit-clas12-analysis/theana/paragon/jlab_farm_tools/src/jsub_filter_convert_machine.py
+ 
+filter_exe_path : /mnt/c/Users/rober/Dropbox/Bobby/Linux/work/CLAS12/mit-clas12-analysis/theana/paragon/filter/fiducial-filtering/filterEvents/
+ 
+converter_gen_exe_path : /mnt/c/Users/rober/Dropbox/Bobby/Linux/work/CLAS12/mit-clas12-analysis/theana/paragon/convertingHipo/minimal/convertGen
+ 
+converter_recon_exe_path : /mnt/c/Users/rober/Dropbox/Bobby/Linux/work/CLAS12/mit-clas12-analysis/theana/paragon/convertingHipo/minimal/convertRec
+ 
+root_merger_path : /mnt/c/Users/rober/Dropbox/Bobby/Linux/work/CLAS12/mit-clas12-analysis/theana/paragon/jlab_farm_tools/src/root_combiner.py
+ 
+outdir : output/
+ 
+generator_type : norad
+ 
+input_filename_rad : aao_rad_input.inp
+ 
+input_filename_norad : aao_norad_input.inp
+ 
+track : analysis
+ 
+n : 1
+ 
+submit : False
+ 
+message : This is just a test batch, please delete
+ 
+flag_ehel : 1
+ 
+ebeam : 10.6
+ 
+q2min : 0.9
+ 
+q2max : 14
+ 
+epmin : 0.2
+ 
+epmax : 10.6
+ 
+fmcall : 1.0
+ 
+boso : 1
+ 
+seed : 0
+ 
+trig : 1000
+ 
+epirea : 1
+ 
+physics_model_rad : 5
+ 
+int_region : .20 .12 .20 .20
+ 
+npart_rad : 4
+ 
+sigr_max_mult : 0.0
+ 
+sigr_max : 0.005
+ 
+model_5_min_W : 1.9
+ 
+rad_emin : 0.005
+ 
+err_max : 0.2
+ 
+target_len : 5
+ 
+target_rad : 0.43
+ 
+cord_x : 0.0
+ 
+cord_y : 0.0
+ 
+cord_z : 0.0
+ 
+physics_model_norad : 5
+ 
+npart_norad : 3
+ 
+xBmin : -1
+ 
+xBmax : 10
+ 
+w2min : -1
+ 
+w2max : 100
+ 
+tmin : -1
+ 
+tmax : 100
+ 
+filter_infile : aao_norad.lund
+ 
+filter_outfile : aao_gen.dat
+ 
+test : True
+ 
+rad : False
+ 
+f18_in : True
+ 
+f18_out_100 : False
+ 
+f18_out_101 : False
+ 
