@@ -40,24 +40,23 @@ def sub_jobs(args):
         filesub = args.jobsdir + file
         print("\n On file {} of {}".format(ind,args.n))
         print("Trying to submit job {}".format(file))
-        print(filesub)
-        print(args.jobsdir +"submitted/"+ file)
-        os.rename(filesub, args.jobsdir +"submitted/"+ file)
         
-        # try:
-        #     process = subprocess.Popen(['jsub', filesub],
-        #             stdout=subprocess.PIPE, 
-        #             stderr=subprocess.PIPE)
-        #     stdout, stderr = process.communicate()
+        try:
+            process = subprocess.Popen(['jsub', filesub],
+                    stdout=subprocess.PIPE, 
+                    stderr=subprocess.PIPE)
+            stdout, stderr = process.communicate()
 
-        #     print("Current time: {}".format(datetime.now().strftime("%d-%H.%M.%S")))
-        #     hertz = ind/(datetime.now()-start).total_seconds()
-        #     seconds_left = (args.n-ind)/hertz
-        #     ETF = datetime.now() + timedelta(seconds=seconds_left)
-        #     print("EFT: {}".format(ETF))
-        # except OSError as e:
-        #     print("Submission failed, error is:")
-        #     print(e)
+            os.rename(filesub, args.jobsdir +"submitted/"+ file)
+
+            print("Current time: {}".format(datetime.now().strftime("%d-%H.%M.%S")))
+            hertz = ind/(datetime.now()-start).total_seconds()
+            seconds_left = (args.n-ind)/hertz
+            ETF = datetime.now() + timedelta(seconds=seconds_left)
+            print("EFT: {}".format(ETF))
+        except OSError as e:
+            print("Submission failed, error is:")
+            print(e)
         
 
 
