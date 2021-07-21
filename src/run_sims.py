@@ -548,8 +548,6 @@ if __name__ == "__main__":
         polarities.append("outbending")
 
 
-
-
     if len(configs)==0:
         print("\n \n \n Error: No configurations selected. Use flags (-h) to set. Exiting \n \n \n")
         sys.exit()
@@ -646,15 +644,19 @@ if __name__ == "__main__":
             writestring = str(arg)+ " : " +str(getattr(args, arg)) + "\n \n"
             full_args_log.write(writestring)
 
+    
+    
     gen_input_file(args,params,logging_file)
+    generate_backup_generator_jsub_script(args,params,logging_file)
+    gemc_submission_details(args,params,logging_file)
+    generate_copy_script(args,params,logging_file)
+    generate_fc_script(args,params,logging_file)
+    generate_merger_script(args,params,logging_file)
 
-    sys.exit()
     #########
-    # NEED TO INCLUDE SPLITTING MECHANISM OVER PHASE SPACE
     # Generate Lund files
         # Create jsub files for lunds
 
-    generate_backup_generator_jsub_script(args,params,logging_file)
 
     generate_aao_jsub_files(args,params,logging_file)
         # Submit the jsub files
@@ -662,19 +664,15 @@ if __name__ == "__main__":
         submit_generator_jsubs(args,params,logging_file)
 
     # Submit jobs to GEMC through webportal
-    gemc_submission_details(args,params,logging_file)
 
 
     # Copy DST files to local directories
         # Generate a sh script to run to copy, and give running insructions
-    generate_copy_script(args,params,logging_file)
 
     # Filter and convert files
         # Generate a sh script to generate and submit jsubs, and give running insructions
-    generate_fc_script(args,params,logging_file)
 
     # Generate emails and send out when various steps are complete
-    generate_merger_script(args,params,logging_file)
     #generate_root_merger_script(args,params,logging_file)
 
 
