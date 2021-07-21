@@ -307,7 +307,6 @@ if __name__ == "__main__":
 
     now = datetime.now()
     dt_string = now.strftime("%Y%m%d_%H%M")
-    main_dir = "/simulations_"+dt_string
     subdirs = ["0_JSub_Factory","1_Generated_Events",
             "2_GEMC_DSTs","3_Filtered_Converted_Root_Files","4_Final_Output_Files"]
 
@@ -549,6 +548,11 @@ if __name__ == "__main__":
     if len(configs)==0:
         print("\n \n \n Error: No configurations selected. Use flags (-h) to set. Exiting \n \n \n")
         sys.exit()
+
+
+
+
+    main_dir = "/simulations_{}_{}_".format(args.generator_type,args.n)+dt_string
 
     if args.test:
         args.base_dir = "/".join(full_file_path.split("/")[:-1])
