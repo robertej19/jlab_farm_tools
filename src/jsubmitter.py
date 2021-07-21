@@ -22,8 +22,8 @@ def sub_jobs(args):
         sys.exit()
     jobs_list = []
     for f in os.listdir(args.jobsdir):
-        f = args.jobsdir + f
-        if os.path.isfile(f):
+        f_path = args.jobsdir + f
+        if os.path.isfile(f_path):
             jobs_list.append(f)
     jobs_list = sorted(jobs_list)
     print("Found {} files in jobs directory".format(len(jobs_list)))
@@ -40,22 +40,24 @@ def sub_jobs(args):
         filesub = args.jobsdir + file
         print("\n On file {} of {}".format(ind,args.n))
         print("Trying to submit job {}".format(file))
+        print(filesub)
+        print(args.jobsdir +"submitted/"+ file)
+        os.rename(filesub, args.jobsdir +"submitted/"+ file)
         
-        try:
-            process = subprocess.Popen(['jsub', filesub],
-                    stdout=subprocess.PIPE, 
-                    stderr=subprocess.PIPE)
-            stdout, stderr = process.communicate()
-            os.rename(filesub, args.jobsdir +"submitted/"+ file)
+        # try:
+        #     process = subprocess.Popen(['jsub', filesub],
+        #             stdout=subprocess.PIPE, 
+        #             stderr=subprocess.PIPE)
+        #     stdout, stderr = process.communicate()
 
-            print("Current time: {}".format(datetime.now().strftime("%d-%H.%M.%S")))
-            hertz = ind/(datetime.now()-start).total_seconds()
-            seconds_left = (args.n-ind)/hertz
-            ETF = datetime.now() + timedelta(seconds=seconds_left)
-            print("EFT: {}".format(ETF))
-        except OSError as e:
-            print("Submission failed, error is:")
-            print(e)
+        #     print("Current time: {}".format(datetime.now().strftime("%d-%H.%M.%S")))
+        #     hertz = ind/(datetime.now()-start).total_seconds()
+        #     seconds_left = (args.n-ind)/hertz
+        #     ETF = datetime.now() + timedelta(seconds=seconds_left)
+        #     print("EFT: {}".format(ETF))
+        # except OSError as e:
+        #     print("Submission failed, error is:")
+        #     print(e)
         
 
 
