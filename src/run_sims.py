@@ -101,7 +101,7 @@ def submit_generator_jsubs(args,params,logging_file):
     executable = args.jsubmitter
     try:
         subprocess.run([executable,
-            "--jobsdir", jsub_generator_dir])
+            "--jobsdir", params.jsub_generator_dir])
         logging_file.write("\n\nSubmitted JSub files with return to: {}".format(params.generator_return_dir))
         print("Successfully submitted jobs, base directory is {}".format(params.output_location))
         return 0
@@ -111,6 +111,27 @@ def submit_generator_jsubs(args,params,logging_file):
         print("Exiting\n")
         logging_file.write("\n\nEvent Generation Jsub batch farm submission failed, error message: {}".format(e))
         return -1
+
+def generate_backup_generator_jsub_script(args,params,logging_file):
+    gen_jsub_script = open(params.output_location+"/backup_submit_generator_jsubs.py", "a")
+    gen_jsub_script.write("""#!/bin/python3.6m
+import subprocess
+
+executable = '{}'
+    try:
+        subprocess.run([executable,
+            "--jobsdir", '{}'])
+        logging_file = open('{}',"a")
+        logging_file.write("\n Ran backup jsub submission for generator")
+        return 0
+    except OSError as e:
+        print("Process failed with error code, Exiting: ",e)
+        return -1""".format(args.jsubmitter,
+                            params.jsub_generator_dir,
+                            params.logging_file_name))
+
+
+
 
 def gemc_submission_details(args,params,logging_file):
     logging_file.write("\n\n On GEMC webportal (https://gemc.jlab.org/web_interface/index.php) Submit the following: \n")
@@ -564,6 +585,8 @@ if __name__ == "__main__":
     logging_file = open(params.logging_file_name, "a")
     logging_file.write("Simulation Start Date: {} \n".format(now))
     logging_file.write("Invoked with args: %s\n" % (sys.argv))
+    logging_file.write("If generation jsub submission fails, restart with the following command: \n")
+    logging_file.write("python3.6"+params.output_location+"/backup_submit_generator_jsubs.py")
     
 
 
@@ -571,6 +594,9 @@ if __name__ == "__main__":
     # NEED TO INCLUDE SPLITTING MECHANISM OVER PHASE SPACE
     # Generate Lund files
         # Create jsub files for lunds
+
+    generate_backup_generator_jsub_script(args,params,logging_file)
+
     generate_aao_jsub_files(args,params,logging_file)
         # Submit the jsub files
     if args.submit:
