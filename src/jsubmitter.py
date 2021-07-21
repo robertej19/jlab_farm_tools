@@ -50,7 +50,7 @@ def sub_jobs(args):
             os.rename(filesub, args.jobsdir +"submitted/"+ file)
 
             print("Current time: {}".format(datetime.now().strftime("%d-%H.%M.%S")))
-            hertz = ind/(datetime.now()-start).total_seconds()
+            hertz = (ind+1)/(datetime.now()-start).total_seconds()
             seconds_left = (args.n-ind)/hertz
             ETF = datetime.now() + timedelta(seconds=seconds_left)
             print("EFT: {}".format(ETF))
