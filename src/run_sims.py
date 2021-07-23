@@ -552,7 +552,7 @@ if __name__ == "__main__":
 
 
 
-    main_dir = "/simulations_{}_{}_".format(args.generator_type,args.n)+dt_string
+    main_dir = "/simulations/{}/{}_".format(args.generator_type,args.n)+dt_string
 
     if args.test:
         args.base_dir = "/".join(full_file_path.split("/")[:-1])

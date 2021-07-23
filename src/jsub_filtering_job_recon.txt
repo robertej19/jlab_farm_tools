@@ -1,0 +1,26 @@
+PROJECT: clas12
+JOBNAME: filtering_converting_recon
+
+TRACK: analysis
+DISK_SPACE: 4 GB
+MEMORY: 1024 MB
+
+COMMAND:
+mkdir -p bin/
+mkdir -p target/
+cp /mnt/c/Users/rober/Dropbox/Bobby/Linux/work/CLAS12/mit-clas12-analysis/theana/paragon/jlab_farm_tools/src/usr/../../run/gen_processors/bin/filterEvents bin/
+cp /mnt/c/Users/rober/Dropbox/Bobby/Linux/work/CLAS12/mit-clas12-analysis/theana/paragon/jlab_farm_tools/src/usr/../../run/gen_processors/target/filter-1.2.1.jar target/
+cp /mnt/c/Users/rober/Dropbox/Bobby/Linux/work/CLAS12/mit-clas12-analysis/theana/paragon/jlab_farm_tools/src/usr/../../run/gen_processors/ ./converter
+./bin/filterEvents --start=0% --end=100% --polarity=inbending  infile_0.hipo
+rm infile_0.hipo
+./converter
+
+INPUT_FILES:
+test/hi21.hipo
+test/hi3.hipo
+test/hip1.hipo
+
+
+INPUT_DATA: infile_0.hipo
+OUTPUT_DATA: recwithgen.root
+OUTPUT_TEMPLATE:/volatile/clas12/robertej/*_filtered_converted.root

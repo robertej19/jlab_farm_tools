@@ -6,18 +6,38 @@ import os, subprocess
 import argparse
 import shutil
 
-def gen_jsub(args,extra_args,count,filename):
+## #Multijob example
+# PROJECT: clas12
+# JOBNAME: filtering_converting_0
+# TRACK: debug
+# DISK_SPACE: 4 GB
+# MEMORY: 1024 MB
+# COMMAND:
+# mkdir -p bin/
+# mkdir -p target/
+# cp /w/hallb-scifs17exp/clas12/robertej/analysis_tools/production/filter/fiducial-filtering/filterEvents/bin/filterEvents bin/
+# cp /w/hallb-scifs17exp/clas12/robertej/analysis_tools/production/filter/fiducial-filtering/filterEvents/target/filter-1.2.1.jar target/
+# cp /w/hallb-scifs17exp/clas12/robertej/analysis_tools/production/convertingHipo/minimal/convertGen ./converter
+# ./bin/filterEvents --start=0% --end=100% --polarity=inbending  --twophotons  infile_0.hipo
+# rm infile_0.hipo
+# ./converter
+# INPUT_FILES:
+# /volatile/clas12/robertej/simulations_20210707_1232/2_GEMC_DSTs/Fall_2018_Inbending/dst_simu_0.hipo
+# /volatile/clas12/robertej/simulations_20210707_1232/2_GEMC_DSTs/Fall_2018_Inbending/dst_simu_1.hipo
+# INPUT_DATA: infile_0.hipo
+# OUTPUT_DATA: genOnly.root
+# OUTPUT_TEMPLATE:/volatile/clas12/robertej/*.root
+
+
+def gen_jsub(args,extra_args,file_sub_string):
 
     output_name = "recwithgen.root" if args.convert_type =="recon" else "genOnly.root"
-    filename_base = filename.split(".hipo")[0]
-    print(filename_base)
-    outfile = open(args.outdir+"jsub_filtering_job_{}.txt".format(count),"w")
+    outfile = open(args.outdir+"jsub_filtering_job_{}.txt".format(args.convert_type),"w")
     string = """PROJECT: clas12
 JOBNAME: filtering_converting_{0}
 
 TRACK: {1}
 DISK_SPACE: 4 GB
-
 MEMORY: 1024 MB
 
 COMMAND:
@@ -25,21 +45,28 @@ mkdir -p bin/
 mkdir -p target/
 cp {2}bin/filterEvents bin/
 cp {2}target/filter-1.2.1.jar target/
-cp {11} ./converter
-./bin/filterEvents --start={4} --end={5} --polarity={6} {7} {8}
-rm {12}
+cp {9} ./converter
+./bin/filterEvents --start={4} --end={5} --polarity={6} {7} infile_0.hipo
+rm infile_0.hipo
 ./converter
 
 INPUT_FILES:
 {3}
 
-SINGLE_JOB: true
-
-OUTPUT_DATA: {13}
-OUTPUT_TEMPLATE:{10}{9}_filtered_converted.root
-""".format(count,args.track,args.filter_exedir,args.hipo_dir+filename,
-    args.proc_start,args.proc_end,args.polarity,extra_args,
-    filename,filename_base,args.return_dir,args.convert_dir,filename,output_name)
+INPUT_DATA: infile_0.hipo
+OUTPUT_DATA: {10}
+OUTPUT_TEMPLATE:{8}*_filtered_converted.root
+""".format(args.convert_type,
+    args.track,
+    args.filter_exedir,
+    file_sub_string,
+    args.proc_start,
+    args.proc_end,
+    args.polarity,
+    extra_args,
+    args.return_dir,
+    args.convert_dir,
+    output_name)
     outfile.write(string)
     outfile.close()
 
@@ -87,31 +114,34 @@ if __name__ == "__main__":
         extra_args += "--eb"
 
     
-    if not os.path.isdir(args.outdir):
-        print(args.outdir+" is not present, creating now")
-        subprocess.call(['mkdir','-p',args.outdir])
-    else:
-        print(args.outdir + "exists already")
-        if args.r:
-            print("trying to remove output dir")
-            try:
-                shutil.rmtree(args.outdir)
-            except OSError as e:
-                print ("Error removing dir: %s - %s." % (e.filename, e.strerror))
-                print("trying to remove dir again")
-                try:
-                    shutil.rmtree(args.outdir)
-                except OSError as e:
-                    print ("Error removing dir: %s - %s." % (e.filename, e.strerror))
-                    print("WARNING COULD NOT CLEAR OUTPUT DIRECTORY")
-            subprocess.call(['mkdir','-p',args.outdir])
+    # # # if not os.path.isdir(args.outdir):
+    # # #     print(args.outdir+" is not present, creating now")
+    # # #     subprocess.call(['mkdir','-p',args.outdir])
+    # # # else:
+    # # #     print(args.outdir + "exists already")
+    # # #     if args.r:
+    # # #         print("trying to remove output dir")
+    # # #         try:
+    # # #             shutil.rmtree(args.outdir)
+    # # #         except OSError as e:
+    # # #             print ("Error removing dir: %s - %s." % (e.filename, e.strerror))
+    # # #             print("trying to remove dir again")
+    # # #             try:
+    # # #                 shutil.rmtree(args.outdir)
+    # # #             except OSError as e:
+    # # #                 print ("Error removing dir: %s - %s." % (e.filename, e.strerror))
+    # # #                 print("WARNING COULD NOT CLEAR OUTPUT DIRECTORY")
+    # # #         subprocess.call(['mkdir','-p',args.outdir])
 
     submissions_list = sorted(os.listdir(args.hipo_dir))
 
+    
     if args.n < 1:
         args.n = len(submissions_list) 
 
-    print("Generating {} submission files".format(args.n))
+    file_sub_string = ""
+    print("Generating submission file for {} hipo files".format(args.n))
     for index in range(0,args.n):
-        print("Creating submission file {} of {}".format(index+1,args.n))
-        gen_jsub(args,extra_args,index,submissions_list[index])
+        file_sub_string += args.hipo_dir+submissions_list[index] +"\n"
+
+    gen_jsub(args,extra_args,file_sub_string)
