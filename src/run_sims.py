@@ -124,6 +124,7 @@ def generate_aao_jsub_files(args,params,logging_file):
             "--jsub_textdir", params.jsub_generator_dir,
             "-n", str(args.n),
             "--return_dir", params.generator_return_dir,
+            "--slurm_job_name", "{}_{}_".format(args.generator_type,args.n),
             "--aao_gen_path_exe", str(args.pi0_gen_exe_path)])
         logging_file.write("\n\nCreated JSub files at: {}".format(params.jsub_generator_dir))
         return 0
@@ -221,11 +222,14 @@ import subprocess""")
         convert_type = "recon" if option=="/Recon/" else "gen"
         print(converter_exe)
         print(convert_type)
+
+        filt_conv_OR_just_conv_path = args.filt_conv_jsub_path if option=="/Recon/" else args.just_conv_jsub_path
+
         for index,config in enumerate(params.configs):
             polarity = params.polarities[index]
             filt_conv_file.write("""
 try:
-    print("Creating jsub text tiles")
+    print("Creating jsub text files")
     subprocess.run(['python3.6','{}',
                     "--polarity",'{}',
                     "--outdir",'{}',
@@ -234,6 +238,7 @@ try:
                     "--filter_exedir",'{}',
                     "--convert_dir",'{}',
                     "--convert_type",'{}',
+                    "--slurm_job_name",'{}_{}_{}_filt_conv',
                     "--twophotons"])
     try:
         subprocess.run(['{}',
@@ -242,13 +247,16 @@ try:
         print("Error encountered, could not submit fc jsub jobs")
 except OSError as e:
     print("Error encountered, fc jsub creation failed")
-    print("Error message was:",e.strerror)""".format(args.filt_conv_jsub_path,
+    print("Error message was:",e.strerror)""".format(filt_conv_OR_just_conv_path,
                 polarity,
                 params.output_location+"/0_JSub_Factory/Filter_Convert/"+config+option,
                 params.output_location+"/3_Filtered_Converted_Root_Files/"+config+option,
                 params.output_location+"/2_GEMC_DSTs/"+config+"/",
                 args.filter_exe_path,
                 converter_exe,
+                convert_type,
+                args.generator_type,
+                args.n,
                 convert_type,
                 args.jsubmitter,
                 params.output_location+"/0_JSub_Factory/Filter_Convert/"+config+option))
@@ -333,6 +341,9 @@ if __name__ == "__main__":
     location_of_dst_copier = main_source_dir+"/jlab_farm_tools/src/dst_copier_from_gemc_output.py"
         # filter convert jsub machine
     location_of_fc_jsub_machine = main_source_dir + "/jlab_farm_tools/src/jsub_filter_convert_machine.py"
+
+    location_of_just_conv_jsub_machine = main_source_dir + "/jlab_farm_tools/src/jsub_convert_machine.py"
+
         #filter exe path
     location_of_filter_exe = main_source_dir + "/filter/fiducial-filtering/filterEvents/"
         #root combiner path
@@ -375,6 +386,9 @@ if __name__ == "__main__":
     parser.add_argument("--dst_copier_path",help="Path to dst copier",default=location_of_dst_copier)
             # Filter & Convert machine jsub path
     parser.add_argument("--filt_conv_jsub_path",help="Location for filt-convert jsub creator",default=location_of_fc_jsub_machine)
+            # Just converter machine jsub path
+    parser.add_argument("--just_conv_jsub_path",help="Location for just convert jsub creator, used for generator only",default=location_of_just_conv_jsub_machine)
+
                 # Filter executable path
     parser.add_argument("--filter_exe_path",help="Location for filter executable path",default=location_of_filter_exe)
                 # gen converter executable path

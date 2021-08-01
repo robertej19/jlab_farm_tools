@@ -34,40 +34,33 @@ def gen_jsub(args,extra_args,file_sub_string):
     output_name = "recwithgen.root" if args.convert_type =="recon" else "genOnly.root"
     outfile = open(args.outdir+"jsub_filtering_job_{}.txt".format(args.convert_type),"w")
     string = """PROJECT: clas12
-JOBNAME: {11}_{0}
+JOBNAME: {6}_{0}
 
 TRACK: {1}
 DISK_SPACE: 4 GB
 MEMORY: 1024 MB
 
 COMMAND:
-mkdir -p bin/
-mkdir -p target/
-cp {2}bin/filterEvents bin/
-cp {2}target/filter-1.2.1.jar target/
-cp {9} ./converter
-./bin/filterEvents --start={4} --end={5} --polarity={6} {7} infile_0.hipo
-rm infile_0.hipo
+
+cp {2} ./converter
+
+
 ./converter
 
 INPUT_FILES:
 {3}
 
 INPUT_DATA: infile_0.hipo
-OUTPUT_DATA: {10}
-OUTPUT_TEMPLATE:{8}*_filtered_converted.root
+OUTPUT_DATA: {4}
+OUTPUT_TEMPLATE:{5}*_filtered_converted.root
 """.format(args.convert_type,
     args.track,
-    args.filter_exedir,
-    file_sub_string,
-    args.proc_start,
-    args.proc_end,
-    args.polarity,
-    extra_args,
-    args.return_dir,
     args.convert_dir,
+    file_sub_string,
     output_name,
+    args.return_dir,
     args.slurm_job_name)
+
     outfile.write(string)
     outfile.close()
 
