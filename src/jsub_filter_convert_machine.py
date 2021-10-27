@@ -32,6 +32,8 @@ import shutil
 def gen_jsub(args,extra_args,file_sub_string):
 
     output_name = "recwithgen.root" if args.convert_type =="recon" else "genOnly.root"
+    if args.real_data:
+        output_name = "pi0.root"
     outfile = open(args.outdir+"jsub_filtering_job_{}.txt".format(args.convert_type),"w")
     string = """PROJECT: clas12
 JOBNAME: {11}_{0}
@@ -92,6 +94,8 @@ if __name__ == "__main__":
     parser.add_argument("--convert_dir",help="specify full path of executible used to convert output into root file",default=exe_abs_path)
     parser.add_argument("--convert_type",help="recon | gen - use to specify if using recon or gen",default="recon")
     parser.add_argument("--slurm_job_name",help="identification name for use in scicomp",default="generic_name_here")
+    parser.add_argument("--real_data",help="use if analyzing real data",default=False,action='store_true')
+
 
     #For filter options
     parser.add_argument("--proc_end",type=str,help="last event count, or percentage",default="100%")
