@@ -46,7 +46,7 @@ COMMAND:
 mkdir -p bin/
 mkdir -p target/
 cp {2}bin/filterEvents bin/
-cp {2}target/filter-1.2.1.jar target/
+cp {2}target/filter-1.3.jar target/
 cp {9} ./converter
 ./bin/filterEvents --start={4} --end={5} --polarity={6} {7} infile_0.hipo
 rm infile_0.hipo
