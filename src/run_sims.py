@@ -121,12 +121,12 @@ def generate_aao_jsub_files(args,params,logging_file):
             "--outdir", str(args.outdir),
             "--seed", str(args.seed),
             "--track", str(args.track),
-            "--jsub_textdir", params.jsub_generator_dir,
+            "--sbatch_textdir", params.sbatch_generator_dir,
             "-n", str(args.n),
             "--return_dir", params.generator_return_dir,
             "--slurm_job_name", "{}_{}_".format(args.generator_type,args.n),
             "--aao_gen_path_exe", str(args.pi0_gen_exe_path)])
-        logging_file.write("\n\nCreated JSub files at: {}".format(params.jsub_generator_dir))
+        logging_file.write("\n\nCreated JSub files at: {}".format(params.sbatch_generator_dir))
         return 0
     except OSError as e:
         print("\nError creating generator input file")
@@ -139,7 +139,7 @@ def submit_generator_jsubs(args,params,logging_file):
     executable = args.jsubmitter
     try:
         subprocess.run([executable,
-            "--jobsdir", params.jsub_generator_dir])
+            "--jobsdir", params.sbatch_generator_dir])
         logging_file.write("\n\nSubmitted JSub files with return to: {}".format(params.generator_return_dir))
         print("Successfully submitted jobs, base directory is {}".format(params.output_location))
         return 0
@@ -163,7 +163,7 @@ try:
         logging_file.write("Ran backup jsub submission for generator")
 except OSError as e:
         print("Process failed with error code, Exiting: ",e)""".format(args.jsubmitter,
-                            params.jsub_generator_dir,
+                            params.sbatch_generator_dir,
                             params.readme_file_name))
 
 
@@ -600,7 +600,7 @@ if __name__ == "__main__":
         subprocess.call(['mkdir','-p',output_location+"/4_Final_Output_Files/"+config])
 
 
-    jsub_generator_dir = output_location+ "/0_JSub_Factory/Generation/"
+    sbatch_generator_dir = output_location+ "/0_JSub_Factory/Generation/"
     jsub_filter_convert_dir = output_location+ "/0_JSub_Factory/Filtering_Converting/"    
     generator_return_dir  = output_location+ "/1_Generated_Events/"
     filt_conv_return_dir = output_location+ "/3_Filtered_Converted_Root_Files"
@@ -609,7 +609,7 @@ if __name__ == "__main__":
     class parameters:
         def __init__(self,jgd,jfcd,grd,fcrd,fd,configs,mag_field_configs,
                     output_location,polarities,readme_file_name):
-            self.jsub_generator_dir=jgd
+            self.sbatch_generator_dir=jgd
             self.jsub_filter_convert_dir=jfcd
             self.generator_return_dir=grd
             self.filt_conv_return_dir=fcrd
@@ -625,7 +625,7 @@ if __name__ == "__main__":
     full_args_logging_file = output_location+"/full_args_log.txt"
     
 
-    params = parameters(jsub_generator_dir,
+    params = parameters(sbatch_generator_dir,
             jsub_filter_convert_dir,
             generator_return_dir,
             filt_conv_return_dir,

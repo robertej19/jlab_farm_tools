@@ -66,10 +66,10 @@ if __name__ == "__main__":
     #getattr(sys, 'frozen', False)
     #if getattr(sys, 'frozen', False):
     __file__ = os.path.dirname(sys.executable)
-    jsubs_abs_path = __file__.split(os.path.basename(__file__))[0]+"sub_warehouse/"
+    sbatchs_abs_path = __file__.split(os.path.basename(__file__))[0]+"sub_warehouse/"
     
     parser = argparse.ArgumentParser(description="Get args",formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("--jobsdir",help="directory containing all jobs txt files to be submitted",default=jsubs_abs_path)
+    parser.add_argument("--jobsdir",help="directory containing all jobs txt files to be submitted",default=sbatchs_abs_path)
     parser.add_argument("-n",type=int,help="Select number of files to submit (-n 0 will submit all jobs)",default=0)
     args = parser.parse_args()
 
