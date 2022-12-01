@@ -320,7 +320,7 @@ if __name__ == "__main__":
 
 
         # Jsub file creator for norad and rad generator
-    location_of_jsub_factory_aao_generator = main_source_dir + "/aao_gen/gen_wrapper/batch_farm_executables/src/jsub_aao_generator.py"
+    location_of_jsub_factory_aao_generator = main_source_dir + "/aao_gen/gen_wrapper/batch_farm_executables/src/sbatch_aao_generator.py"
         # Jsub submitting tool
     location_of_jsubmitter = main_source_dir+"/jlab_farm_tools/src/jsubmitter.py"
         # aao_(no)rad generator wrapper aka aao_gen

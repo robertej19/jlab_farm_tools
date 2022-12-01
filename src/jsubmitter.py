@@ -42,7 +42,7 @@ def sub_jobs(args):
         print("Trying to submit job {}".format(file))
         
         try:
-            process = subprocess.Popen(['jsub', filesub],
+            process = subprocess.Popen(['sbatch', filesub],
                     stdout=subprocess.PIPE, 
                     stderr=subprocess.PIPE)
             stdout, stderr = process.communicate()
