@@ -599,10 +599,15 @@ if __name__ == "__main__":
         subprocess.call(['mkdir','-p',output_location+"/3_Filtered_Converted_Root_Files/"+config+"/Recon"])
         subprocess.call(['mkdir','-p',output_location+"/4_Final_Output_Files/"+config])
 
+    #make sbatch error and output file return directories
+    subprocess.call(['mkdir','-p',output_location+"/1_Generated_Events/gen_output/"])
+    subprocess.call(['mkdir','-p',output_location+"/1_Generated_Events/gen_error/"])
+    subprocess.call(['mkdir','-p',output_location+"/1_Generated_Events/lund_files/"])
+
 
     sbatch_generator_dir = output_location+ "/0_JSub_Factory/Generation/"
     jsub_filter_convert_dir = output_location+ "/0_JSub_Factory/Filtering_Converting/"    
-    generator_return_dir  = output_location+ "/1_Generated_Events/"
+    generator_return_dir  = output_location+ "/1_Generated_Events/lund_files/"
     filt_conv_return_dir = output_location+ "/3_Filtered_Converted_Root_Files"
     final_dir = output_location+ "/4_Final_Output_Files"
 
@@ -668,6 +673,9 @@ if __name__ == "__main__":
     generate_copy_script(args,params,logging_file)
     generate_fc_script(args,params,logging_file)
     generate_merger_script(args,params,logging_file)
+
+
+
 
     #########
     # Generate Lund files
