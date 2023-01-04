@@ -342,7 +342,7 @@ if __name__ == "__main__":
         # filter convert jsub machine
     location_of_fc_jsub_machine = main_source_dir + "/jlab_farm_tools/src/sbatch_filter_convert_machine.py"
 
-    location_of_sbatch_just_convert_machine = main_source_dir + "/jlab_farm_tools/src/sbatch_just_convert_machine_path.py"
+    location_of_sbatch_just_convert_machine = main_source_dir + "/jlab_farm_tools/src/sbatch_just_convert_machine.py"
 
         #filter exe path
     location_of_filter_exe = main_source_dir + "/filter/fiducial-filtering/filterEvents/"
