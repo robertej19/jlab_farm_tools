@@ -35,10 +35,6 @@ import shutil
 def gen_jsub(index,args,extra_args,file_sub_string,full_file_path):
 
 
-Recon/FC_Files
-sbatch_output
-sbatch_err
-
     output_name = "recwithgen.root" if args.convert_type =="recon" else "genOnly.root"
     if args.real_data:
         output_name = "pi0.root"
