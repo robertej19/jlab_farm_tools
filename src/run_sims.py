@@ -340,7 +340,7 @@ if __name__ == "__main__":
         # dst copier path
     location_of_dst_copier = main_source_dir+"/jlab_farm_tools/src/dst_copier_from_gemc_output.py"
         # filter convert jsub machine
-    location_of_fc_jsub_machine = main_source_dir + "/jlab_farm_tools/src/jsub_filter_convert_machine.py"
+    location_of_fc_jsub_machine = main_source_dir + "/jlab_farm_tools/src/sbatch_filter_convert_machine.py"
 
     location_of_just_conv_jsub_machine = main_source_dir + "/jlab_farm_tools/src/jsub_convert_machine.py"
 
@@ -595,14 +595,23 @@ if __name__ == "__main__":
         subprocess.call(['mkdir','-p',output_location+"/0_JSub_Factory/Filter_Convert/"+config+"/Gen"])
         subprocess.call(['mkdir','-p',output_location+"/0_JSub_Factory/Filter_Convert/"+config+"/Recon"])
         subprocess.call(['mkdir','-p',output_location+"/2_GEMC_DSTs/"+config])
-        subprocess.call(['mkdir','-p',output_location+"/3_Filtered_Converted_Root_Files/"+config+"/Gen"])
-        subprocess.call(['mkdir','-p',output_location+"/3_Filtered_Converted_Root_Files/"+config+"/Recon"])
+        subprocess.call(['mkdir','-p',output_location+"/3_Filtered_Converted_Root_Files/"+config+"/Gen/FC_Files"])
+        subprocess.call(['mkdir','-p',output_location+"/3_Filtered_Converted_Root_Files/"+config+"/Gen/sbatch_output"])
+        subprocess.call(['mkdir','-p',output_location+"/3_Filtered_Converted_Root_Files/"+config+"/Gen/sbatch_err"])
+
+        subprocess.call(['mkdir','-p',output_location+"/3_Filtered_Converted_Root_Files/"+config+"/Recon/FC_Files"])
+        subprocess.call(['mkdir','-p',output_location+"/3_Filtered_Converted_Root_Files/"+config+"/Recon/sbatch_output"])
+        subprocess.call(['mkdir','-p',output_location+"/3_Filtered_Converted_Root_Files/"+config+"/Recon/sbatch_err"])
+
         subprocess.call(['mkdir','-p',output_location+"/4_Final_Output_Files/"+config])
 
     #make sbatch error and output file return directories
     subprocess.call(['mkdir','-p',output_location+"/1_Generated_Events/gen_output/"])
     subprocess.call(['mkdir','-p',output_location+"/1_Generated_Events/gen_error/"])
     subprocess.call(['mkdir','-p',output_location+"/1_Generated_Events/lund_files/"])
+
+
+
 
 
     sbatch_generator_dir = output_location+ "/0_JSub_Factory/Generation/"
