@@ -56,7 +56,7 @@ echo $PWD
 TSLEEP=$[ ( $RANDOM % (180+1) ) ]s
 echo "Sleeping for ${{TSLEEP}} ..."
 sleep $TSLEEP""".format(args.return_dir,
-                        file_sub_string.split(".")[0],
+                        file_sub_string.split("/")[-1].split(".")[0],
                         args.convert_type,
                         args.slurm_job_name)
 
