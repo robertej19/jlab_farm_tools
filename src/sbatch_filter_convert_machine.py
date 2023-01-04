@@ -45,7 +45,7 @@ def gen_jsub(index,args,extra_args,file_sub_string,full_file_path):
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --mem-per-cpu=1000
-#SBATCH --job-name=filt_conv_{2}_{3}_{1}.job
+#SBATCH --job-name={2}_{3}.job
 #SBATCH --time=24:00:00
 #SBATCH --gres=disk:10000
 #SBATCH --output={0}sbatch_output/{1}.out
