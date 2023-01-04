@@ -387,7 +387,7 @@ if __name__ == "__main__":
             # Filter & Convert machine jsub path
     parser.add_argument("--filt_conv_jsub_path",help="Location for filt-convert jsub creator",default=location_of_fc_jsub_machine)
             # Just converter machine jsub path
-    parser.add_argument("--just_conv_jsub_path",help="Location for just convert sbatch creator, used for generator only",default= location_of_sbatch_just_convert_machine)
+    parser.add_argument("--sbatch_just_convert_machine_path",help="Location for just convert sbatch creator, used for generator only",default= location_of_sbatch_just_convert_machine)
 
                 # Filter executable path
     parser.add_argument("--filter_exe_path",help="Location for filter executable path",default=location_of_filter_exe)
