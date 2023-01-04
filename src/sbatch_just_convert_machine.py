@@ -29,10 +29,10 @@ import shutil
 # OUTPUT_TEMPLATE:/volatile/clas12/robertej/*.root
 
 
-def gen_jsub(args,extra_args,file_sub_string):
+def gen_jsub(args,extra_args,file_sub_string,index):
 
     output_name = "recwithgen.root" if args.convert_type =="recon" else "genOnly.root"
-    outfile = open(args.outdir+"sbatch_just_filtering_job_{}.txt".format(args.convert_type),"w")
+    outfile = open(args.outdir+"sbatch_just_filtering_job_{0}_{1}.txt".format(args.convert_type,index),"w")
 
     header = """#!/bin/bash
 #
@@ -151,4 +151,4 @@ if __name__ == "__main__":
     for index in range(0,args.n):
         file_sub_string += args.hipo_dir+submissions_list[index] +"\n"
 
-    gen_jsub(args,extra_args,file_sub_string)
+        gen_jsub(args,extra_args,file_sub_string,index)
