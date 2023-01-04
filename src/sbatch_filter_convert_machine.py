@@ -29,59 +29,72 @@ import shutil
 
     # pwd
 
+#fix output files
+#fix destination
 
 def gen_jsub(index,args,extra_args,file_sub_string,full_file_path):
+
+
+Recon/FC_Files
+sbatch_output
+sbatch_err
 
     output_name = "recwithgen.root" if args.convert_type =="recon" else "genOnly.root"
     if args.real_data:
         output_name = "pi0.root"
     outfile = open(args.outdir+"sbatch_filt_conv_{}_{}.txt".format(args.convert_type,index),"w")
-    string = """#!/bin/bash
+    header = """#!/bin/bash
 #
 #SBATCH --account=clas12
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --mem-per-cpu=2500
-#SBATCH --job-name={0}_{10}.job
+#SBATCH --mem-per-cpu=1000
+#SBATCH --job-name=filt_conv_{2}_{3}_{1}.job
 #SBATCH --time=24:00:00
 #SBATCH --gres=disk:10000
-#SBATCH --output=/volatile/clas12/robertej/{0}.out
-#SBATCH --error=/volatile/clas12/robertej/{0}.err
-#SBATCH --chdir=/scratch/robertej/
-#
+#SBATCH --output={0}sbatch_output/{1}.out
+#SBATCH --error={0}sbatch_err/{1}.err
+
+cd /scratch/slurm/$SLURM_JOB_ID
+
+echo "currently located in:"
+echo $PWD
 
 # Sleep a random amount of time from 0-180s
 # This avoids conflicts when lots of jobs start simultaneously.
 TSLEEP=$[ ( $RANDOM % (180+1) ) ]s
 echo "Sleeping for ${{TSLEEP}} ..."
-sleep $TSLEEP
+sleep $TSLEEP""".format(args.return_dir,
+                        file_sub_string.split(".")[0],
+                        args.convert_type,
+                        args.slurm_job_name)
 
+    string = """
 mkdir -p bin/
 mkdir -p target/
-cp {1}bin/filterEvents bin/
-cp {1}target/filter-1.3.jar target/
-cp {2} ./converter
-cp {11} .
-./bin/filterEvents --start={3} --end={4} --polarity={5} {6} {10}
-rm {10}
+cp {0}bin/filterEvents bin/
+cp {0}target/filter-1.3.jar target/
+cp {1} ./converter
+cp {9} .
+./bin/filterEvents --start={2} --end={3} --polarity={4} {5} {9}
+rm {8}
 ./converter
-mv {8} {7}{12}_filt_conv.root
+mv {7} {6}FC_Files/{10}_filt_conv.root
 
-""".format(args.convert_type,
-    args.filter_exedir,
-    args.convert_dir,
-    args.proc_start,
-    args.proc_end,
-    args.polarity,
-    extra_args,
-    args.return_dir,
-    output_name,
-    args.slurm_job_name,
-    file_sub_string,
-    full_file_path,
-    file_sub_string.split(".")[0])
-    outfile.write(string)
+""".format(args.filter_exedir, 
+    args.convert_dir, 
+    args.proc_start, 
+    args.proc_end, 
+    args.polarity, 
+    extra_args, 
+    args.return_dir, 
+    output_name, 
+    file_sub_string, 
+    full_file_path, 
+    file_sub_string.split(".")[0]) 
+    outfile.write(header+string)
     outfile.close()
+
 
 if __name__ == "__main__":
     #Since __file__ doesn't work when compiled with cython, do the following:
