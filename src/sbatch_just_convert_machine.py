@@ -32,7 +32,7 @@ import shutil
 def gen_jsub(args,extra_args,file_sub_string):
 
     output_name = "recwithgen.root" if args.convert_type =="recon" else "genOnly.root"
-    outfile = open(args.outdir+"jsub_filtering_job_{}.txt".format(args.convert_type),"w")
+    outfile = open(args.outdir+"sbatch_just_filtering_job_{}.txt".format(args.convert_type),"w")
 
     header = """#!/bin/bash
 #
