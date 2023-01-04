@@ -223,7 +223,7 @@ import subprocess""")
         print(converter_exe)
         print(convert_type)
 
-        filt_conv_OR_just_conv_path = args.filt_conv_jsub_path if option=="/Recon/" else args.just_conv_jsub_path
+        filt_conv_OR_just_conv_path = args.filt_conv_jsub_path if option=="/Recon/" else args.sbatch_just_convert_machine_path
 
         for index,config in enumerate(params.configs):
             polarity = params.polarities[index]
@@ -342,7 +342,7 @@ if __name__ == "__main__":
         # filter convert jsub machine
     location_of_fc_jsub_machine = main_source_dir + "/jlab_farm_tools/src/sbatch_filter_convert_machine.py"
 
-    location_of_just_conv_jsub_machine = main_source_dir + "/jlab_farm_tools/src/jsub_convert_machine.py"
+    location_of_sbatch_just_convert_machine = main_source_dir + "/jlab_farm_tools/src/sbatch_just_convert_machine_path.py"
 
         #filter exe path
     location_of_filter_exe = main_source_dir + "/filter/fiducial-filtering/filterEvents/"
@@ -387,7 +387,7 @@ if __name__ == "__main__":
             # Filter & Convert machine jsub path
     parser.add_argument("--filt_conv_jsub_path",help="Location for filt-convert jsub creator",default=location_of_fc_jsub_machine)
             # Just converter machine jsub path
-    parser.add_argument("--just_conv_jsub_path",help="Location for just convert jsub creator, used for generator only",default=location_of_just_conv_jsub_machine)
+    parser.add_argument("--just_conv_jsub_path",help="Location for just convert sbatch creator, used for generator only",default= location_of_sbatch_just_convert_machine)
 
                 # Filter executable path
     parser.add_argument("--filter_exe_path",help="Location for filter executable path",default=location_of_filter_exe)
