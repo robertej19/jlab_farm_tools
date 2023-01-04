@@ -1,0 +1,28 @@
+#!/bin/bash
+#
+#SBATCH --account=clas12
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --mem-per-cpu=1000
+#SBATCH --job-name=gen_rad_1_gen_filt_conv.job
+#SBATCH --time=24:00:00
+#SBATCH --gres=disk:10000
+#SBATCH --output=/volatile/clas12/robertej/simulations/rad/1_20230104_0009/3_Filtered_Converted_Root_Files/Fall_2018_Inbending/Gen/sbatch_output//volatile/clas12/robertej/simulations/rad/1_20230104_0009/2_GEMC_DSTs/Fall_2018_Inbending/dst_simu_8493.out
+#SBATCH --error=/volatile/clas12/robertej/simulations/rad/1_20230104_0009/3_Filtered_Converted_Root_Files/Fall_2018_Inbending/Gen/sbatch_err//volatile/clas12/robertej/simulations/rad/1_20230104_0009/2_GEMC_DSTs/Fall_2018_Inbending/dst_simu_8493.err
+
+cd /scratch/slurm/$SLURM_JOB_ID
+
+echo "currently located in:"
+echo $PWD
+
+# Sleep a random amount of time from 0-180s
+# This avoids conflicts when lots of jobs start simultaneously.
+TSLEEP=$[ ( $RANDOM % (180+1) ) ]s
+echo "Sleeping for ${TSLEEP} ..."
+sleep $TSLEEP
+cp /w/hallb-scshelf2102/clas12/robertej/analysis_tools/development/new_aao_gen_testing/convertingHipo/minimal/convertGen ./converter
+cp /volatile/clas12/robertej/simulations/rad/1_20230104_0009/2_GEMC_DSTs/Fall_2018_Inbending/dst_simu_8493.hipo
+ .
+./converter
+mv genOnly.root /volatile/clas12/robertej/simulations/rad/1_20230104_0009/3_Filtered_Converted_Root_Files/Fall_2018_Inbending/Gen/FC_Files/dst_simu_8493_filt_conv.root
+

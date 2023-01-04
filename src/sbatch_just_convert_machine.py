@@ -69,7 +69,7 @@ mv {2} {1}FC_Files/{4}_filt_conv.root
 """.format( args.convert_dir, 
     args.return_dir,
     output_name, 
-    file_sub_string, 
+    file_sub_string.split(".")[0]+".hipo", #strange workaround for whitespace bug
     file_sub_string.split("/")[-1].split(".")[0])  
     outfile.write(header+string)
     outfile.close()
