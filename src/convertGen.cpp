@@ -102,7 +102,7 @@ int main(int argc, char **argv){
                   GenEpz = tPz;
               }
             
-              if((c12.getBank(idx_GenPart)->getInt(iGenPid,ipa)) == 111  ){  // pi0s
+              if((c12.getBank(idx_GenPart)->getInt(iPid,ipa)) == 111  ){  // pi0s
                     GenPipx = tGenPx;
                     GenPipy = tGenPy;
                     GenPipz = tGenPz;
@@ -112,9 +112,7 @@ int main(int argc, char **argv){
                   GenPpx = tPx;
                   GenPpy = tPy;
                   GenPpz = tPz;
-                
-
-                
+                                
               } // if for protons
               
                 
