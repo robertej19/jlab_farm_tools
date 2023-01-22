@@ -38,6 +38,11 @@ int main(int argc, char **argv){
     Float_t GenEpx;
     Float_t GenEpy;
     Float_t GenEpz;
+
+    // ==== pi0s =====
+    Float_t GenPipx;
+    Float_t GenPipy;
+    Float_t GenPipz; 
     
     // ==== gammas =====
     Int_t nmG;
@@ -54,6 +59,12 @@ int main(int argc, char **argv){
     T->Branch("GenPpx",&GenPpx,"GenPpx/F");
     T->Branch("GenPpy",&GenPpy,"GenPpy/F");
     T->Branch("GenPpz",&GenPpz,"GenPpz/F");
+
+
+// ===============    Pi0s ==================================
+    T->Branch("GenPipx",&GenPipx,"GenPipx/F");
+    T->Branch("GenPipy",&GenPipy,"GenPipy/F");
+    T->Branch("GenPipz",&GenPipz,"GenPipz/F"); 
 
 
 // ================   Gammas  ===============    
@@ -91,12 +102,21 @@ int main(int argc, char **argv){
                   GenEpz = tPz;
               }
             
+              if((c12.getBank(idx_GenPart)->getInt(iGenPid,ipa)) == 111  ){  // pi0s
+                    GenPipx = tGenPx;
+                    GenPipy = tGenPy;
+                    GenPipz = tGenPz;
+              }
+
               if((c12.getBank(idx_GenPart)->getInt(iPid,ipa)) == 2212  ){  // protons
                   GenPpx = tPx;
                   GenPpy = tPy;
                   GenPpz = tPz;
                 
+
+                
               } // if for protons
+              
                 
               if((c12.getBank(idx_GenPart)->getInt(iPid,ipa)) == 22  ){  // photons
                   GenGpx[nmG] = tPx;
