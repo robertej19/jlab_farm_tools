@@ -264,7 +264,11 @@ except OSError as e:
 def generate_merger_script(args,params,logging_file):
     merger_file = open(params.output_location+"/root_merger_script.py", "a")
     merger_file.write("""#!/bin/python3.6m
-import subprocess""")
+import os
+import subprocess
+
+
+""")
 
     for option in ["/Gen/","/Recon/"]:
         convert_type = "recon" if option=="/Recon/" else "gen"
@@ -272,17 +276,50 @@ import subprocess""")
             output_name = "merged_{}_".format(config)
             output_name +="recon.root" if option=="/Recon/" else "gen.root"
             merger_file.write("""
+
+#Before running this script, make sure that the following directories contain the same files
+#Sometimes filter converting will fail, which makes acceptance correction wrong
+
+dir1 = {5} #get gen directory
+dir2 = {6} #get recon directory
+
+# Get the list of files in each directory
+files1 = set(os.listdir(dir1))
+files2 = set(os.listdir(dir2))
+
+# Find the files that are only in one directory
+only_in_dir1 = files1.difference(files2)
+only_in_dir2 = files2.difference(files1)
+
+# Print the results
+print("Files only in", dir1)
+for file in only_in_dir1:
+    print(file)
+
+print("\nFiles only in", dir2)
+for file in only_in_dir2:
+    print(file)
+
+# now remove the uncommon files
+for file in only_in_dir1:
+    os.remove(dir1+file)
+
+for file in only_in_dir2:
+    os.remove(dir2+file)
+
 try:
-    print("Running root merger for",'{}','{}')
-    subprocess.run(['python3.6','{}',
-                    "-d",'{}',
-                    "-o",'{}'])
+    print("Running root merger for",'{0}','{1}')
+    subprocess.run(['python3.6','{2}',
+                    "-d",'{3}',
+                    "-o",'{4}'])
 except OSError as e:
     print("Error encountered, fc jsub creation failed")
     print("Error message was:",e.strerror)""".format(config,convert_type,
                 args.root_merger_path,
                 params.output_location+"/3_Filtered_Converted_Root_Files/"+config+option+"FC_Files/",
-                params.output_location+"/4_Final_Output_Files/"+config+"/"+output_name))
+                params.output_location+"/4_Final_Output_Files/"+config+"/"+output_name,
+                params.output_location+"/3_Filtered_Converted_Root_Files/"+config+"/Gen/"+"FC_Files/",
+                 params.output_location+"/3_Filtered_Converted_Root_Files/"+config+"/Recon/"+"FC_Files/"))
 
 
 #         logging_file.write("""
