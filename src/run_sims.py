@@ -280,8 +280,8 @@ import subprocess
 #Before running this script, make sure that the following directories contain the same files
 #Sometimes filter converting will fail, which makes acceptance correction wrong
 
-dir1 = {5} #get gen directory
-dir2 = {6} #get recon directory
+dir1 = '{5}' #get gen directory
+dir2 = '{6}' #get recon directory
 
 # Get the list of files in each directory
 files1 = set(os.listdir(dir1))
@@ -296,7 +296,7 @@ print("Files only in", dir1)
 for file in only_in_dir1:
     print(file)
 
-print("\nFiles only in", dir2)
+print("Files only in", dir2)
 for file in only_in_dir2:
     print(file)
 
