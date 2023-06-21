@@ -125,7 +125,7 @@ def generate_aao_jsub_files(args,params,logging_file):
             "--sbatch_textdir", params.sbatch_generator_dir,
             "-n", str(args.n),
             "--return_dir", params.generator_return_dir,
-            "--slurm_job_name", "{}_{}_".format(args.generator_type,args.n),
+            "--slurm_job_name", "{}_{}_{}".format(args.generator_type,args.n,args.dt_string),
             "--aao_gen_path_exe", str(args.pi0_gen_exe_path)])
         logging_file.write("\n\nCreated JSub files at: {}".format(params.sbatch_generator_dir))
         return 0
@@ -239,7 +239,7 @@ try:
                     "--filter_exedir",'{}',
                     "--convert_dir",'{}',
                     "--convert_type",'{}',
-                    "--slurm_job_name",'{}_{}_{}_filt_conv',
+                    "--slurm_job_name",'{}_{}_{}_{}_filt_conv',
                     "--twophotons"])
     try:
         subprocess.run(['{}',
@@ -259,6 +259,7 @@ except OSError as e:
                 args.generator_type,
                 args.n,
                 convert_type,
+                args.dt_string,
                 args.jsubmitter,
                 params.output_location+"/0_JSub_Factory/Filter_Convert/"+config+option))
 
@@ -449,6 +450,11 @@ if __name__ == "__main__":
     parser.add_argument("--input_filename_rad",help="filename for aao_rad",default="aao_rad_input.inp")
     parser.add_argument("--input_filename_norad",help="filename for aao_norad",default="aao_norad_input.inp")
 
+    parser.add_argument("--default_gen_args_loc",help="location of default generator args json file",default=location_of_default_generator_args)
+    #Add dt_string to parser args
+    parser.add_argument("--dt_string",help="Date and time string for output directory",default=dt_string)
+
+
 
     with open(location_of_default_generator_args) as fjson:
         d = json.load(fjson)
@@ -581,7 +587,7 @@ if __name__ == "__main__":
     parser.add_argument("--f18_in",help="Configuration: Fall 2018 Inbending (Torus = -1.00)",default=False,action='store_true')
     parser.add_argument("--f18_out_100",help="Configuration: Fall 2018 Outbending (Torus = +1.00)",default=False,action='store_true')
     parser.add_argument("--f18_out_101",help="Configuration: Fall 2018 Outbending (Torus = +1.01)",default=False,action='store_true')
-    parser.add_argument("--default_gen_args_loc",help="location of default generator args json file",default=location_of_default_generator_args)
+    
     
     args = parser.parse_args()
     
