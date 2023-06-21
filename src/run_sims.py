@@ -67,6 +67,7 @@ def gen_input_file(args,params,logging_file):
                 "--seed", str(args.seed),
                 "--fmcall", str(args.fmcall),
                 "--boso", str(args.boso),
+                "--default_gen_args_loc", str(args.default_gen_args_loc),
                 "--input_filename_rad", str(params.output_location+"/"+args.input_filename_rad),
                 "--input_filename_norad", str(params.output_location+"/"+args.input_filename_norad)])
         return 0
@@ -389,6 +390,9 @@ if __name__ == "__main__":
     location_of_converter_gen_exe = main_source_dir +  "/convertingHipo/minimal/convertGen"
     location_of_converter_recon_exe = main_source_dir + "/convertingHipo/minimal/convertRec"
 
+    # location of default generator args:
+    location_of_default_generator_args = main_source_dir + "/aao_gen/gen_wrapper/batch_farm_executables/src/default_generator_args.json"
+
     parser = argparse.ArgumentParser(description="""Need to write the description \n
                     This script: \n
                     1.) \n
@@ -446,7 +450,7 @@ if __name__ == "__main__":
     parser.add_argument("--input_filename_norad",help="filename for aao_norad",default="aao_norad_input.inp")
 
 
-    with open('../../aao_gen/gen_wrapper/batch_farm_executables/src/default_generator_args.json') as fjson:
+    with open(location_of_default_generator_args) as fjson:
         d = json.load(fjson)
 
     norad = Dict2Class(d["aao_norad"][0])
@@ -577,8 +581,13 @@ if __name__ == "__main__":
     parser.add_argument("--f18_in",help="Configuration: Fall 2018 Inbending (Torus = -1.00)",default=False,action='store_true')
     parser.add_argument("--f18_out_100",help="Configuration: Fall 2018 Outbending (Torus = +1.00)",default=False,action='store_true')
     parser.add_argument("--f18_out_101",help="Configuration: Fall 2018 Outbending (Torus = +1.01)",default=False,action='store_true')
+    parser.add_argument("--default_gen_args_loc",help="location of default generator args json file",default=location_of_default_generator_args)
+    
     args = parser.parse_args()
     
+
+    
+
     configs = []
     mag_field_configs = []
     polarities = []
