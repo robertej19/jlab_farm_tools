@@ -69,7 +69,7 @@ sleep $TSLEEP""".format(args.return_dir,
 mkdir -p bin/
 mkdir -p target/
 cp {0}bin/filterEvents bin/
-cp {0}target/filter-1.3.jar target/
+cp {0}target/filter-1.4.jar target/
 cp {1} ./converter
 cp {9} .
 ./bin/filterEvents --start={2} --end={3} --polarity={4} {5} {9}
