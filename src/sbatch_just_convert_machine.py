@@ -29,7 +29,7 @@ import shutil
 # OUTPUT_TEMPLATE:/volatile/clas12/robertej/*.root
 
 
-def gen_jsub(args,extra_args,file_sub_string,index):
+def gen_jsub(index,args,extra_args,file_sub_string,full_file_path):
 
     output_name = "recwithgen.root" if args.convert_type =="recon" else "genOnly.root"
     outfile = open(args.outdir+"sbatch_just_filtering_job_{0}_{1}.txt".format(args.convert_type,index),"w")
@@ -64,13 +64,13 @@ sleep $TSLEEP""".format(args.return_dir,
 cp {0} ./converter
 cp {3} .
 ./converter
-mv {2} {1}FC_Files/{4}_filt_conv.root
+mv {2} {1}FC_Files/{4}_conv.root
 
 """.format( args.convert_dir, 
     args.return_dir,
     output_name, 
-    file_sub_string.split(".")[0]+".hipo", #strange workaround for whitespace bug
-    file_sub_string.split("/")[-1].split(".")[0])  
+    full_file_path,
+    file_sub_string.split(".")[0])  
     outfile.write(header+string)
     outfile.close()
 
@@ -149,6 +149,13 @@ if __name__ == "__main__":
     file_sub_string = ""
     print("Generating submission file for {} hipo files".format(args.n))
     for index in range(0,args.n):
-        file_sub_string += args.hipo_dir+submissions_list[index] +"\n"
+        file_sub_string = submissions_list[index] #FROM FC Machine
+        full_file_path = args.hipo_dir+file_sub_string #FROM FC Machine
+        gen_jsub(index,args,extra_args,file_sub_string,full_file_path) #FROM FC Machine
 
-        gen_jsub(args,extra_args,file_sub_string,index)
+        #file_sub_string += args.hipo_dir+submissions_list[index] +"\n" #ORIGINAL
+        #gen_jsub(args,extra_args,file_sub_string,index) #ORIGINAL
+
+
+
+
